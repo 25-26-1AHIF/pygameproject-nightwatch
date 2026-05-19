@@ -1,0 +1,2 @@
+from torch.fx.passes.runtime_assert import insert_deferred_runtime_asserts
+.insert_deferred_runtime_asserts()
