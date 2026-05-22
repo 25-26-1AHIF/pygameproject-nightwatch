@@ -26,7 +26,7 @@ def draw_main_screen():
 def draw_play_screen():
     screen.fill((5, 5, 15))
 
-    # Spieler (vorerst einfaches Rechteck)
+    # Player
     pygame.draw.rect(screen, (180, 180, 255),
                      (player_x, player_y,
                       GameVariables.PLAYER_SIZE, GameVariables.PLAYER_SIZE))
@@ -45,56 +45,56 @@ def draw_game_over_screen():
     screen.blit(hint, (GameVariables.SCREEN_WIDTH // 2 - hint.get_width() // 2, 370))
 
 
-# --- Hauptschleife ---
-running = True
-while running:
-    events = pygame.event.get()
-
-    for event in events:
-        if event.type == pygame.QUIT:
-            running = False
-
-    keys = pygame.key.get_pressed()
-
-    # MAIN SCREEN
-    if GameScreens.actual_screen == GameScreens.MAIN:
-        draw_main_screen()
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    player_x = GameVariables.SCREEN_WIDTH  // 2
-                    player_y = GameVariables.SCREEN_HEIGHT // 2
-                    GameScreens.actual_screen = GameScreens.PLAY
-                elif event.key == pygame.K_ESCAPE:
-                    running = False
-
-    # PLAY SCREEN
-    elif GameScreens.actual_screen == GameScreens.PLAY:
-        # Bewegung
-        if keys[pygame.K_w] or keys[pygame.K_UP]:    player_y -= GameVariables.PLAYER_SPEED
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:  player_y += GameVariables.PLAYER_SPEED
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:  player_x -= GameVariables.PLAYER_SPEED
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]: player_x += GameVariables.PLAYER_SPEED
-
-        draw_play_screen()
+if __name__ == '__main__':
+    running = True
+    while running:
+        events = pygame.event.get()
 
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    GameScreens.actual_screen = GameScreens.GAME_OVER
+            if event.type == pygame.QUIT:
+                running = False
 
-    # GAME OVER SCREEN
-    elif GameScreens.actual_screen == GameScreens.GAME_OVER:
-        draw_game_over_screen()
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    GameScreens.actual_screen = GameScreens.MAIN
-                elif event.key == pygame.K_ESCAPE:
-                    GameScreens.actual_screen = GameScreens.MAIN
+        keys = pygame.key.get_pressed()
 
-    pygame.display.flip()
-    clock.tick(GameVariables.FPS)
+        # MAIN SCREEN
+        if GameScreens.actual_screen == GameScreens.MAIN:
+            draw_main_screen()
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        player_x = GameVariables.SCREEN_WIDTH  // 2
+                        player_y = GameVariables.SCREEN_HEIGHT // 2
+                        GameScreens.actual_screen = GameScreens.PLAY
+                    elif event.key == pygame.K_ESCAPE:
+                        running = False
 
-pygame.quit()
-sys.exit()
+        # PLAY SCREEN
+        elif GameScreens.actual_screen == GameScreens.PLAY:
+            # Bewegung
+            if keys[pygame.K_w] or keys[pygame.K_UP]:    player_y -= GameVariables.PLAYER_SPEED
+            if keys[pygame.K_s] or keys[pygame.K_DOWN]:  player_y += GameVariables.PLAYER_SPEED
+            if keys[pygame.K_a] or keys[pygame.K_LEFT]:  player_x -= GameVariables.PLAYER_SPEED
+            if keys[pygame.K_d] or keys[pygame.K_RIGHT]: player_x += GameVariables.PLAYER_SPEED
+
+            draw_play_screen()
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        GameScreens.actual_screen = GameScreens.GAME_OVER
+
+        # GAME OVER SCREEN
+        elif GameScreens.actual_screen == GameScreens.GAME_OVER:
+            draw_game_over_screen()
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        GameScreens.actual_screen = GameScreens.MAIN
+                    elif event.key == pygame.K_ESCAPE:
+                        GameScreens.actual_screen = GameScreens.MAIN
+
+        pygame.display.flip()
+        clock.tick(GameVariables.FPS)
+
+    pygame.quit()
+    sys.exit()
