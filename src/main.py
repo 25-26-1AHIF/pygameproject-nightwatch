@@ -1,6 +1,8 @@
 import pygame
 import sys
 from game.game_variables import GameVariables, GameScreens
+from room import draw_room
+from player import Player
 
 GameVariables.init()
 
@@ -8,9 +10,22 @@ screen = pygame.display.set_mode((GameVariables.SCREEN_WIDTH, GameVariables.SCRE
 pygame.display.set_caption(GameVariables.TITLE)
 clock = pygame.time.Clock()
 
-# Spieler-Position
-player_x = GameVariables.SCREEN_WIDTH  // 2
-player_y = GameVariables.SCREEN_HEIGHT // 2
+player = Player(200, 200)
+
+
+def draw_darkness(player_x, player_y):
+    dark = pygame.Surface((GameVariables.SCREEN_WIDTH, GameVariables.SCREEN_HEIGHT),
+                           pygame.SRCALPHA)
+    dark.fill((0, 0, 0, 255))   # komplett schwarz + alpha
+
+    cx = player_x + 16
+    cy = player_y + 16
+
+    # Sichtkreis ausschneiden (transparent machen)
+    for radius, alpha in [(220, 180), (180, 100), (130, 40), (80, 0)]:
+        pygame.draw.circle(dark, (0, 0, 0, alpha), (cx, cy), radius)
+
+    screen.blit(dark, (0, 0))
 
 
 def draw_main_screen():
@@ -22,17 +37,8 @@ def draw_main_screen():
     hint = GameVariables.FONT_MIDDLE.render("[ ENTER ] Starten", True, (120, 120, 140))
     screen.blit(hint, (GameVariables.SCREEN_WIDTH // 2 - hint.get_width() // 2, 370))
 
-
-def draw_play_screen():
-    screen.fill((5, 5, 15))
-
-    # Player
-    pygame.draw.rect(screen, (180, 180, 255),
-                     (player_x, player_y,
-                      GameVariables.PLAYER_SIZE, GameVariables.PLAYER_SIZE))
-
-    hint = GameVariables.FONT_SMALL.render("WASD bewegen  |  ESC = Game Over", True, (80, 80, 100))
-    screen.blit(hint, (10, GameVariables.SCREEN_HEIGHT - 30))
+    esc = GameVariables.FONT_SMALL.render("[ ESC ] Beenden", True, (70, 70, 80))
+    screen.blit(esc, (GameVariables.SCREEN_WIDTH // 2 - esc.get_width() // 2, 430))
 
 
 def draw_game_over_screen():
@@ -45,38 +51,35 @@ def draw_game_over_screen():
     screen.blit(hint, (GameVariables.SCREEN_WIDTH // 2 - hint.get_width() // 2, 370))
 
 
-if __name__ == '__main__':
+if "__main__" == __name__:
     running = True
     while running:
         events = pygame.event.get()
+        keys   = pygame.key.get_pressed()
 
         for event in events:
             if event.type == pygame.QUIT:
                 running = False
 
-        keys = pygame.key.get_pressed()
-
         # MAIN SCREEN
         if GameScreens.actual_screen == GameScreens.MAIN:
             draw_main_screen()
+
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        player_x = GameVariables.SCREEN_WIDTH  // 2
-                        player_y = GameVariables.SCREEN_HEIGHT // 2
+                        player = Player(200, 200)   # Spieler zuruecksetzen
                         GameScreens.actual_screen = GameScreens.PLAY
                     elif event.key == pygame.K_ESCAPE:
                         running = False
 
         # PLAY SCREEN
         elif GameScreens.actual_screen == GameScreens.PLAY:
-            # Bewegung
-            if keys[pygame.K_w] or keys[pygame.K_UP]:    player_y -= GameVariables.PLAYER_SPEED
-            if keys[pygame.K_s] or keys[pygame.K_DOWN]:  player_y += GameVariables.PLAYER_SPEED
-            if keys[pygame.K_a] or keys[pygame.K_LEFT]:  player_x -= GameVariables.PLAYER_SPEED
-            if keys[pygame.K_d] or keys[pygame.K_RIGHT]: player_x += GameVariables.PLAYER_SPEED
-
-            draw_play_screen()
+            screen.fill((0, 0, 0))
+            draw_room(screen)
+            player.update(keys)
+            player.draw(screen)
+            draw_darkness(player.x, player.y)
 
             for event in events:
                 if event.type == pygame.KEYDOWN:
@@ -86,6 +89,7 @@ if __name__ == '__main__':
         # GAME OVER SCREEN
         elif GameScreens.actual_screen == GameScreens.GAME_OVER:
             draw_game_over_screen()
+
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
