@@ -16,7 +16,7 @@ class GameVariables:
     @staticmethod
     def init():
         pygame.init()
-        GameVariables.FONT_BIG    = pygame.font.SysFont("monospace", 64, bold=True)
+        GameVariables.FONT_BIG    = pygame.font.SysFont("monospace", 100, bold=True)
         GameVariables.FONT_MIDDLE = pygame.font.SysFont("monospace", 30, bold=True)
         GameVariables.FONT_SMALL  = pygame.font.SysFont("monospace", 16, bold=True)
 
@@ -25,5 +25,7 @@ class GameScreens:
     MAIN      = "main"
     PLAY      = "play"
     GAME_OVER = "game_over"
+    SCOREBOARD = "scoreboard"
+    TUT = "TUT"
 
     actual_screen = MAIN
