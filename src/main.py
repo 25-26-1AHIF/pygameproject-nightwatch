@@ -51,7 +51,7 @@ def draw_game_over_screen():
     screen.blit(hint, (GameVariables.SCREEN_WIDTH // 2 - hint.get_width() // 2, 370))
 
 
-if "__main__" == __name__:
+if __name__ == "__main__":
     running = True
     while running:
         events = pygame.event.get()
