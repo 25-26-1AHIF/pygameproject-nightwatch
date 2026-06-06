@@ -1,13 +1,12 @@
 import pygame
-from game.game_variables import GameVariables, GameScreens
+from game_variables.game_variables import GameVariables as GV
 
-TILE_SIZE = 48
+# Tile groesse
+TILE = 48
 
-# Tile-Typen
-WALL  = 0
-FLOOR = 1
-
-ROOM_MAP = [
+# 0 = Wand, 1 = Boden
+# 27 Spalten x 15 Zeilen = fuellt 1280x720
+KARTE = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -25,19 +24,23 @@ ROOM_MAP = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-WALL_COLOR  = (120, 60, 20)
-FLOOR_COLOR = (200, 180, 150)
+WAND_FARBE  = (80, 40, 15)
+BODEN_FARBE = (190, 165, 130)
 
-def draw_room(screen):
-    for row_i, row in enumerate(ROOM_MAP):
-        for col_i, tile in enumerate(row):
-            x = col_i * TILE_SIZE
-            y = row_i * TILE_SIZE
-            rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
 
-            if tile == WALL:
-                pygame.draw.rect(screen, WALL_COLOR, rect)
-                pygame.draw.rect(screen, (80, 40, 10), rect, 2)  # rand
+def zeichnen(screen: pygame.Surface):
+    for zeile_i, zeile in enumerate(KARTE):
+        for spalte_i, tile in enumerate(zeile):
+            x = spalte_i * TILE
+            y = zeile_i  * TILE
+            rect = pygame.Rect(x, y, TILE, TILE)
+
+            if tile == 0:
+                pygame.draw.rect(screen, WAND_FARBE, rect)
+                pygame.draw.rect(screen, (50, 25, 8), rect, 2)
+                # kleine Ziegeloptik
+                pygame.draw.line(screen, (50, 25, 8), (x + TILE//2, y), (x + TILE//2, y + TILE), 1)
+                pygame.draw.line(screen, (50, 25, 8), (x, y + TILE//2), (x + TILE, y + TILE//2), 1)
             else:
-                pygame.draw.rect(screen, FLOOR_COLOR, rect)
-                pygame.draw.rect(screen, (180, 160, 130), rect, 1)  # gitter
+                pygame.draw.rect(screen, BODEN_FARBE, rect)
+                pygame.draw.rect(screen, (170, 148, 112), rect, 1)

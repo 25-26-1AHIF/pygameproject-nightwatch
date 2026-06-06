@@ -1,169 +1,153 @@
 import pygame
-import sys
-from game.game_variables import GameVariables, GameScreens
-from room import draw_room
-from player import Player
-from assets import images
-GameVariables.init()
-
-screen = pygame.display.set_mode((GameVariables.SCREEN_WIDTH, GameVariables.SCREEN_HEIGHT))
-pygame.display.set_caption(GameVariables.TITLE)
-clock = pygame.time.Clock()
-
-player = Player(200, 200)
+from game_variables.game_variables import GameVariables as GV
+from game_variables.game_variables import GameScreens
+from game.player  import Player
+from game.monster import Monster
+from game import room
 
 
+def main_screen(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+    pygame.display.set_caption("Nightwatch - Menü")
 
-background_main = pygame.image.load("assets/images/main_screen_background.png").convert()
-# pygame.transform.scale KI CODE
-background_main = pygame.transform.scale(background_main, (GameVariables.SCREEN_WIDTH, GameVariables.SCREEN_HEIGHT))
+    titel_text   = GV.FONT_BIG.render("NIGHTWATCH", True, (200, 30, 30))
+    starten_text = GV.FONT_MIDDLE.render("Spiel starten", True, (200, 200, 200))
+
+    titel_rect   = titel_text.get_rect(center=(GV.SCREEN_WIDTH / 2, 280))
+    starten_rect = starten_text.get_rect(center=(GV.SCREEN_WIDTH / 2, 380))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return GameScreens.EXIT
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return GameScreens.EXIT
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if starten_rect.collidepoint(event.pos):
+                    return GameScreens.PLAY
+
+        screen.fill((8, 8, 15))
+        screen.blit(source=titel_text,   dest=titel_rect)
+        screen.blit(source=starten_text, dest=starten_rect)
+
+        # roter Rahmen um den Startknopf
+        pygame.draw.rect(surface=screen, rect=starten_rect, color="red", width=1)
+
+        hint = GV.FONT_SMALL.render("Klick auf \"Spiel starten\" oder ESC zum Beenden",
+                                    True, (80, 70, 80))
+        hint_rect = hint.get_rect(center=(GV.SCREEN_WIDTH / 2, GV.SCREEN_HEIGHT - 30))
+        screen.blit(hint, hint_rect)
+
+        pygame.display.flip()
+        clock.tick(GV.FPS)
 
 
-def draw_darkness(player_x, player_y):
-    dark = pygame.Surface((GameVariables.SCREEN_WIDTH, GameVariables.SCREEN_HEIGHT),
-                           pygame.SRCALPHA)
-    dark.fill((0, 0, 0, 255))   # komplett schwarz + alpha
+def play_screen(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+    pygame.display.set_caption("Nightwatch - Spiel")
 
-    cx = player_x + 16
-    cy = player_y + 16
+    player  = Player(screen=screen, x=100, y=100)
+    monster = Monster(screen=screen, x=900, y=550)
 
-    # Sichtkreis ausschneiden (transparent machen)
-    for radius, alpha in [(220, 180), (180, 100), (130, 40), (80, 0)]:
-        pygame.draw.circle(dark, (0, 0, 0, alpha), (cx, cy), radius)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return GameScreens.EXIT
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return GameScreens.MAIN
+
+        # Zeichnen
+        screen.fill((0, 0, 0))
+        room.zeichnen(screen)
+
+        player.update_and_draw()
+        monster.update_and_draw(player.xpos, player.ypos)
+
+        # Dunkelheits-Overlay drueber
+        dunkelheit_zeichnen(screen, player.xpos + GV.SQUARE_SIZE // 2,
+                                    player.ypos + GV.SQUARE_SIZE // 2)
+
+        # Pruefe ob Monster Spieler erwischt hat
+        if monster.trifft_spieler(player.xpos, player.ypos):
+            return GameScreens.GAME_OVER
+
+        pygame.display.flip()
+        clock.tick(GV.FPS)
+
+
+def game_over_screen(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+    pygame.display.set_caption("Nightwatch - Game Over")
+
+    go_text     = GV.FONT_BIG.render("ERWISCHT!", True, (220, 30, 30))
+    wieder_text = GV.FONT_MIDDLE.render("Nochmal", True, (200, 200, 200))
+    menu_text   = GV.FONT_MIDDLE.render("Hauptmenu", True, (200, 200, 200))
+
+    go_rect     = go_text.get_rect(center=(GV.SCREEN_WIDTH / 2, 260))
+    wieder_rect = wieder_text.get_rect(center=(GV.SCREEN_WIDTH / 2 - 120, 380))
+    menu_rect   = menu_text.get_rect(center=(GV.SCREEN_WIDTH / 2 + 120, 380))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return GameScreens.EXIT
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if wieder_rect.collidepoint(event.pos):
+                    return GameScreens.PLAY
+                if menu_rect.collidepoint(event.pos):
+                    return GameScreens.MAIN
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return GameScreens.PLAY
+                if event.key == pygame.K_ESCAPE:
+                    return GameScreens.MAIN
+
+        screen.fill((12, 0, 0))
+        screen.blit(go_text,     go_rect)
+        screen.blit(wieder_text, wieder_rect)
+        screen.blit(menu_text,   menu_rect)
+
+        pygame.draw.rect(surface=screen, rect=wieder_rect, color="red",  width=1)
+        pygame.draw.rect(surface=screen, rect=menu_rect,   color="gray", width=1)
+
+        pygame.display.flip()
+        clock.tick(GV.FPS)
+
+
+# KI CODE ANFANG
+# Dunkelheits-Overlay mit transparentem Kreis (Sichtbereich um den Spieler)
+def dunkelheit_zeichnen(screen: pygame.Surface, cx: int, cy: int):
+    dark = pygame.Surface((GV.SCREEN_WIDTH, GV.SCREEN_HEIGHT), pygame.SRCALPHA)
+    dark.fill((0, 0, 0, 255))
+
+    pygame.draw.circle(dark, (0, 0, 0, 0),   (cx, cy), 150)
+    pygame.draw.circle(dark, (0, 0, 0, 80),  (cx, cy), 190)
+    pygame.draw.circle(dark, (0, 0, 0, 150), (cx, cy), 230)
+    pygame.draw.circle(dark, (0, 0, 0, 210), (cx, cy), 270)
 
     screen.blit(dark, (0, 0))
+# KI CODE ENDE
 
 
-def draw_main_screen():
-    screen.fill((10, 10, 20))
-    screen.blit(background_main, (0, 0))
+def main():
+    GV.init()
+    screen = pygame.display.set_mode((GV.SCREEN_WIDTH, GV.SCREEN_HEIGHT))
+    clock  = pygame.time.Clock()
 
-    #title = GameVariables.FONT_BIG.render("NIGHTWATCH", True, (200, 40, 40))
-    #screen.blit(title, (GameVariables.SCREEN_WIDTH  // 2 - title.get_width()  // 2, 80))
+    while True:
+        if GameScreens.actual_screen == GameScreens.MAIN:
+            GameScreens.actual_screen = main_screen(screen, clock)
 
-    #by = GameVariables.FONT_SMALL.render("by Fabian & Onur", True,(200,40,40))
-    #screen.blit(by,(GameVariables.SCREEN_WIDTH // 2 - by.get_width() // 2, 190))
+        elif GameScreens.actual_screen == GameScreens.PLAY:
+            GameScreens.actual_screen = play_screen(screen, clock)
 
-    start = GameVariables.FONT_MIDDLE.render("Starten", True, (255, 255, 255))
-    starten_rect = start.get_rect(center=(GameVariables.SCREEN_WIDTH // 2, 320))
-    screen.blit(start, starten_rect)
+        elif GameScreens.actual_screen == GameScreens.GAME_OVER:
+            GameScreens.actual_screen = game_over_screen(screen, clock)
 
-    score_board = GameVariables.FONT_MIDDLE.render("Erklärung", True, (255, 255, 255))
-    scoreboard_rect = score_board.get_rect(center=(GameVariables.SCREEN_WIDTH // 2, 380))
-    screen.blit(score_board,scoreboard_rect)
+        elif GameScreens.actual_screen == GameScreens.EXIT:
+            break
 
-    leave = GameVariables.FONT_MIDDLE.render("Beenden", True, (255, 255, 255))
-    leave_rect = leave.get_rect(center=(GameVariables.SCREEN_WIDTH // 2, 440))
-    screen.blit(leave,leave_rect)
-
-    return start, starten_rect, score_board, scoreboard_rect, leave_rect
-
-def erklärung_screen():
-    screen.fill((0, 0, 0))
-
-    # KI CODE
-    panel = pygame.Surface((900, 420), pygame.SRCALPHA)
-    panel.fill((0, 0, 0, 160))
-    screen.blit(panel, (GameVariables.SCREEN_WIDTH // 2 - 450, 120))
-    # KI CODE
-
-    titel = GameVariables.FONT_BIG.render("NIGHTWATCH", True, (200, 40, 40))
-    screen.blit(titel, (GameVariables.SCREEN_WIDTH // 2 - titel.get_width() // 2, 40))
-
-    # KI CODE
-    zeilen = [
-        "Du bist ein Nachtwächter in einem verlassenen Museum.",
-        "Löse in 5 Räumen je eine Aufgabe und sammle alle 5 Schlüssel.",
-        "Fliehe durch die Fluchttür — ohne vom Monster erwischt zu werden.",
-        "",
-        "Deine Taschenlampe ist dein einziges Licht,",
-        "aber sie lockt das Monster an.",
-        "",
-        "Schleich dich durch, behalte deine Batterie im Blick",
-        "und entkome so schnell wie möglich.",
-    ]
-    y = 160
-    for zeile in zeilen:
-        txt = GameVariables.FONT_SMALL.render(zeile, True, (220, 220, 220))
-        screen.blit(txt, (GameVariables.SCREEN_WIDTH // 2 - txt.get_width() // 2, y))
-        y += 35
-    # KI CODE
-
-    hinweis = GameVariables.FONT_SMALL.render("[ESC] Zurück", True, (150, 150, 160))
-    screen.blit(hinweis, (GameVariables.SCREEN_WIDTH // 2 - hinweis.get_width() // 2, 560))
-def draw_game_over_screen():
-    screen.fill((15, 0, 0))
-
-    txt = GameVariables.FONT_BIG.render("GAME OVER", True, (220, 30, 30))
-    screen.blit(txt, (GameVariables.SCREEN_WIDTH  // 2 - txt.get_width()  // 2, 260))
-
-    ESC = GameVariables.FONT_MIDDLE.render("[ESC] Menü",True,(220,30,30))
-    screen.blit(ESC,(GameVariables.SCREEN_WIDTH// 2 - ESC.get_width() // 2, 400))
+    pygame.quit()
 
 
 if __name__ == "__main__":
-    running = True
-    while running:
-        events = pygame.event.get()
-        keys = pygame.key.get_pressed()
-
-        for event in events:
-            if event.type == pygame.QUIT:
-                running = False
-
-        # MAIN SCREEN
-        if GameScreens.actual_screen == GameScreens.MAIN:
-            start, starten_rect, score_board, scoreboard_rect, leave_rect = draw_main_screen()
-
-            maus_x, maus_y = pygame.mouse.get_pos()
-            for event in events:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if starten_rect.collidepoint(maus_x, maus_y):
-                        player = Player(200, 200)   # Spieler zuruecksetzen
-                        GameScreens.actual_screen = GameScreens.PLAY
-                    elif leave_rect.collidepoint(maus_x, maus_y):
-                        running = False
-                    elif scoreboard_rect.collidepoint(maus_x,maus_y):
-                        GameScreens.actual_screen = GameScreens.TUT
-
-
-
-
-        # SCOREBOARD SCREEN
-        elif GameScreens.actual_screen == GameScreens.TUT:
-            erklärung_screen()
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        GameScreens.actual_screen = GameScreens.MAIN
-
-
-        # PLAY SCREEN
-        elif GameScreens.actual_screen == GameScreens.PLAY:
-            screen.fill((0, 0, 0))
-            draw_room(screen)
-            player.update(keys)
-            player.draw(screen)
-            draw_darkness(player.x, player.y)
-
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        GameScreens.actual_screen = GameScreens.GAME_OVER
-
-        # GAME OVER SCREEN
-        elif GameScreens.actual_screen == GameScreens.GAME_OVER:
-            draw_game_over_screen()
-
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
-                        GameScreens.actual_screen = GameScreens.MAIN
-                    elif event.key == pygame.K_ESCAPE:
-                        GameScreens.actual_screen = GameScreens.MAIN
-
-        pygame.display.flip()
-        clock.tick(GameVariables.FPS)
-
-    pygame.quit()
-    sys.exit()
+    main()
