@@ -79,8 +79,8 @@ def game_over_screen(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     pygame.display.set_caption("Nightwatch - Game Over")
 
     go_text     = GV.FONT_BIG.render("ERWISCHT!", True, (220, 30, 30))
-    wieder_text = GV.FONT_MIDDLE.render("Nochmal", True, (200, 200, 200))
-    menu_text   = GV.FONT_MIDDLE.render("Hauptmenu", True, (200, 200, 200))
+    wieder_text = GV.FONT_MIDDLE.render("Nochmal Spielen", True, (200, 200, 200))
+    menu_text   = GV.FONT_MIDDLE.render("Hauptmenü", True, (200, 200, 200))
 
     go_rect     = go_text.get_rect(center=(GV.SCREEN_WIDTH / 2, 260))
     wieder_rect = wieder_text.get_rect(center=(GV.SCREEN_WIDTH / 2 - 120, 380))

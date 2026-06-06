@@ -1,14 +1,27 @@
 import pygame
 from game_variables.game_variables import GameVariables as GV
+from game.sprite import Sprite
 
 
 class Player:
     def __init__(self, screen: pygame.Surface, x: int, y: int):
-        self.screen = screen
-        self.xpos = x
-        self.ypos = y
+        self.screen  = screen
+        self.xpos    = x
+        self.ypos    = y
         self.groesse = GV.SQUARE_SIZE
-        self.speed = 3
+        self.speed   = 3
+        self.frame_counter = 0
+
+        # KI CODE ANFANG
+        # Spritesheet laden - 5 Frames, jeder Frame 38x38px (190x38 gesamt)
+        self.animation = Sprite(
+            filepath       = "assets/images/player_sheet.png",
+            image_count    = 5,
+            image_rect     = pygame.Rect(0, 0, 38, 38),
+            animation_speed= 8
+        )
+        self.animation.load_spritesheet()
+        # KI CODE ENDE
 
     def move(self):
         keys = pygame.key.get_pressed()
@@ -33,11 +46,15 @@ class Player:
             self.ypos = GV.SCREEN_HEIGHT - self.groesse
 
     def zeichnen(self):
-        pygame.draw.rect(
-            surface=self.screen,
-            rect=(self.xpos, self.ypos, self.groesse, self.groesse),
-            color=(210, 190, 120)
+        # Sprite auf SQUARE_SIZE skaliert zeichnen
+        self.animation.draw(
+            screen        = self.screen,
+            xpos          = self.xpos,
+            ypos          = self.ypos,
+            frame_counter = self.frame_counter,
+            scale         = (self.groesse, self.groesse)
         )
+        self.frame_counter += 1
 
     def update_and_draw(self):
         self.move()
