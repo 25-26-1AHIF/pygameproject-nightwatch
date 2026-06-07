@@ -1,11 +1,11 @@
 import pygame
 from game_variables.game_variables import GameVariables as GV
 
-# Tile groesse
+# Tile größe
 TILE = 48
 
 # 0 = Wand, 1 = Boden
-# 27 Spalten x 15 Zeilen = fuellt 1280x720
+# 27 Spalten x 15 Zeilen = füllt 1280x720
 KARTE = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],

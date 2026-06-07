@@ -63,11 +63,11 @@ def play_screen(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         player.update_and_draw()
         monster.update_and_draw(player.xpos, player.ypos)
 
-        # Dunkelheits-Overlay drueber
+        # Dunkelheits-Overlay drüber
         dunkelheit_zeichnen(screen, player.xpos + GV.SQUARE_SIZE // 2,
                                     player.ypos + GV.SQUARE_SIZE // 2)
 
-        # Pruefe ob Monster Spieler erwischt hat
+        # Prüfe ob Monster Spieler erwischt hat
         if monster.trifft_spieler(player.xpos, player.ypos):
             return GameScreens.GAME_OVER
 

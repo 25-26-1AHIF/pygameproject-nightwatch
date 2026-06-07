@@ -1,0 +1,24 @@
+NIGHTWATCH – Lizenzen und Quellen
+==================================
+
+BIBLIOTHEKEN
+------------
+pygame (pygame-ce)
+  Lizenz: LGPL 2.1
+  https://www.pygame.org
+
+ASSETS – Grafiken
+-----------------
+player_sheet.png
+  Quelle: selbst gezeichnet
+  Lizenz: -
+
+ASSETS – Sounds
+---------------
+-
+
+ENTWICKLER
+----------
+Onur Gündüz
+Fabian Bechter
+HTL Rankweil – 1AHIF – 2025/26
