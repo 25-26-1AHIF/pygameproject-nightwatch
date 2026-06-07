@@ -10,12 +10,12 @@ pygame (pygame-ce)
 ASSETS – Grafiken
 -----------------
 player_sheet.png
-  Quelle: selbst gezeichnet
+  Quelle: Eigenkreation (Aseprite) [Onur]
   Lizenz: -
 
 ASSETS – Sounds
 ---------------
--
+-- Noch keine Vorhanden --
 
 ENTWICKLER
 ----------
