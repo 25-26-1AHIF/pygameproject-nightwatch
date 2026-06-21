@@ -1,24 +1,66 @@
-NIGHTWATCH – Lizenzen und Quellen
-==================================
+NIGHTWATCH – Lizenzen & Drittanbieter-Bibliotheken
+===================================================
 
-BIBLIOTHEKEN
-------------
-pygame (pygame-ce)
-  Lizenz: LGPL 2.1
-  https://www.pygame.org
+Autoren:  Onur Gündüz, Fabian Bechter
+Schule:   HTL Rankweil  |  Klasse 1AHIF  |  Schuljahr 2025/26
+Projekt:  Endabgabe POS – Pygame Horrorspiel
 
-ASSETS – Grafiken
------------------
-player_sheet.png
-  Quelle: Eigenkreation (Aseprite) [Onur]
-  Lizenz: -
 
-ASSETS – Sounds
----------------
--- Noch keine Vorhanden --
+1. Python
+---------
+Lizenz: Python Software Foundation License (PSF)
+URL:    https://www.python.org/psf/license/
+Version: 3.12+
 
-ENTWICKLER
-----------
-Onur Gündüz
-Fabian Bechter
-HTL Rankweil – 1AHIF – 2025/26
+
+2. pygame
+---------
+Lizenz: GNU Lesser General Public License v2.1 (LGPL-2.1)
+URL:    https://www.pygame.org/
+Version: 2.6.1
+
+pygame ist eine Bibliothek für Multimedia-Anwendungen auf Basis von SDL2.
+
+
+3. NumPy
+--------
+Lizenz: BSD 3-Clause License
+URL:    https://numpy.org/
+Version: >= 1.26.0
+
+Wird für den Musik-Loop und den Film-Grain-Effekt verwendet.
+
+
+4. Pillow (PIL Fork)
+--------------------
+Lizenz: Historical Permission Notice and Disclaimer (HPND)
+URL:    https://python-pillow.org/
+Version: >= 10.0.0
+
+Wird zum Generieren der Sprite-Sheets beim ersten Start verwendet.
+
+
+5. Spielinhalte / Assets
+------------------------
+Alle Grafiken werden prozedural mit Pillow und pygame.draw generiert.
+Alle Sounds werden prozedural mit NumPy generiert.
+Keine externen Bild- oder Audiodateien eingebettet.
+
+
+6. KI-Unterstützung (gekennzeichnete Stellen)
+----------------------------------------------
+Algorithmisch anspruchsvolle Abschnitte wurden mit Claude Opus 4.8
+(Anthropic) erstellt. Diese Stellen sind im Code markiert mit:
+
+    # KI CODE ANFANG
+    # Claude Opus 4.8
+    # Prompt: "..."
+    ...
+    # KI CODE ENDE
+
+Betroffene Dateien:
+- src/game/utils.py        – BFS-Wegfindung (bfs_path, next_waypoint)
+- src/game/lighting.py     – Film-Grain, Taschenlampen-Lichtkegel
+- src/game/monster.py      – Monster-Bewegungslogik (_bewege)
+- src/game/sounds.py       – Horror-Ambient-Loop (make_bg_music)
+- src/main.py              – ZoomCamera-Klasse, PauseMenu-Klasse
