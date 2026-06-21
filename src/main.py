@@ -313,11 +313,6 @@ class PauseMenu:
         surface.blit(mn_txt, (mn_x + mn_w // 2 - mn_txt.get_width() // 2,
                                mn_y + mn_h // 2 - mn_txt.get_height() // 2))
 
-        hint = fnt_sm.render(
-            "ESC/P – Fortsetzen  |  M – Hauptmenü  |  TAB/1/2/3 – Reiter  |  Pfeiltasten",
-            True, (45, 32, 42)
-        )
-        surface.blit(hint, (px + pw // 2 - hint.get_width() // 2, btn_y + 42))
 
     def _zeile_zeichnen(self, surface, fnt_item, fnt_val, fnt_sm,
                          px, zeile_y, pw, label, wert_str, sel,
