@@ -25,18 +25,6 @@ PATROL_ROUTEN: list[list[int]] = [
     [3, 4, 5, 6, 13, 12, 5, 4, 3],
 ]
 
-# geschwindigkeiten - werden beim spielstart mit apply_difficulty überschrieben
-_speed_patrol = GV.MONSTER_RADIUS * 0 + 1.2
-_speed_alert  = 1.8
-_speed_hunt   = 3.4
-_sight_range  = GV.MONSTER_SICHT
-_dark_sight   = GV.MONSTER_DUNKEL
-_hear_parkett = GV.MONSTER_HOER_PARKETT
-_hear_fliesen = GV.MONSTER_HOER_FLIESEN
-_hear_teppich = GV.MONSTER_HOER_TEPPICH
-_hear_base    = GV.MONSTER_HOER
-
-
 class Monster:
     # das monster – verfolgt und fängt den spieler
 
@@ -66,6 +54,17 @@ class Monster:
         self.is_stunned: bool = False
 
         self._sprite = MonsterSprite()
+
+        # geschwindigkeiten und wahrnehmung – werden durch apply_difficulty gesetzt
+        self._speed_patrol: float = 1.2
+        self._speed_alert:  float = 1.8
+        self._speed_hunt:   float = 3.4
+        self._sight_range:  float = GV.MONSTER_SICHT
+        self._dark_sight:   float = GV.MONSTER_DUNKEL
+        self._hear_parkett: int   = GV.MONSTER_HOER_PARKETT
+        self._hear_fliesen: int   = GV.MONSTER_HOER_FLIESEN
+        self._hear_teppich: int   = GV.MONSTER_HOER_TEPPICH
+        self._hear_base:    int   = GV.MONSTER_HOER
 
     def update(self, player_x: float, player_y: float,
                player_noise: float, player_battery: float,
@@ -116,9 +115,9 @@ class Monster:
                                        self._zuletzt_gesehen_y)
 
         speed = {
-            MonsterState.PATROL: _speed_patrol,
-            MonsterState.ALERT:  _speed_alert,
-            MonsterState.HUNT:   _speed_hunt,
+            MonsterState.PATROL: self._speed_patrol,
+            MonsterState.ALERT:  self._speed_alert,
+            MonsterState.HUNT:   self._speed_hunt,
         }[self.state]
 
         self._bewege(speed, player_x, player_y)
@@ -169,7 +168,7 @@ class Monster:
     def _pruefe_sicht(self, px: float, py: float, battery: float) -> bool:
         # wenn lampe aus sieht das monster schlechter
         d     = dist(self.x, self.y, px, py)
-        sicht = _sight_range if battery > 5 else _dark_sight
+        sicht = self._sight_range if battery > 5 else self._dark_sight
         return d <= sicht
 
     def _pruefe_geraeusch(self, px: float, py: float, noise: float) -> bool:
@@ -177,10 +176,10 @@ class Monster:
         if noise <= 0:
             return False
         boden = get_floor_at(px, py)
-        if boden == GV.BODEN_PARKETT:   basis = _hear_parkett
-        elif boden == GV.BODEN_FLIESEN: basis = _hear_fliesen
-        elif boden == GV.BODEN_TEPPICH: basis = _hear_teppich
-        else:                            basis = _hear_base
+        if boden == GV.BODEN_PARKETT:   basis = self._hear_parkett
+        elif boden == GV.BODEN_FLIESEN: basis = self._hear_fliesen
+        elif boden == GV.BODEN_TEPPICH: basis = self._hear_teppich
+        else:                            basis = self._hear_base
         return dist(self.x, self.y, px, py) <= basis * noise
 
     # KI CODE ANFANG
@@ -248,17 +247,15 @@ class Monster:
     def apply_difficulty(self, diff: dict) -> None:
         # wendet schwierigkeitsgrad-einstellungen auf die monster-werte an
 
-        global _speed_patrol, _speed_alert, _speed_hunt
-        global _sight_range, _hear_parkett, _hear_fliesen, _hear_teppich, _hear_base
-        _speed_patrol = diff["patrol"]
-        _speed_alert  = diff["alert"]
-        _speed_hunt   = diff["hunt"]
-        _sight_range  = diff["sight"]
+        self._speed_patrol = diff["patrol"]
+        self._speed_alert  = diff["alert"]
+        self._speed_hunt   = diff["hunt"]
+        self._sight_range  = diff["sight"]
         hf = diff["hear_factor"]
-        _hear_parkett = int(240 * hf)
-        _hear_fliesen = int(200 * hf)
-        _hear_teppich = int(80  * hf)
-        _hear_base    = int(180 * hf)
+        self._hear_parkett = int(240 * hf)
+        self._hear_fliesen = int(200 * hf)
+        self._hear_teppich = int(80  * hf)
+        self._hear_base    = int(180 * hf)
 
     def catches_player(self, px: float, py: float) -> bool:
         # true wenn das monster nah genug am spieler ist um zu fangen

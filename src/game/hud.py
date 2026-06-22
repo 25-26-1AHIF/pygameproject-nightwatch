@@ -45,7 +45,7 @@ def draw_battery(surface: pygame.Surface, battery: float) -> None:
 
 
 def draw_keys(surface: pygame.Surface, gesammelt: int) -> None:
-    # gesammelte schluessel oben links anzeigen
+    # gesammelte schlüssel oben links anzeigen
     font = pygame.font.SysFont("monospace", 12)
     beschr = font.render("Schluessel:", True, (180, 180, 200))
     surface.blit(beschr, (16, 38))
@@ -66,7 +66,7 @@ def draw_keys(surface: pygame.Surface, gesammelt: int) -> None:
 def draw_task_list(surface: pygame.Surface, tasks_done: list[bool]) -> None:
     # mini-aufgabenliste oben rechts zeichnen
     aufgaben = [
-        "R1: Kerzen anzuenden",
+        "R1: Kerzen anzünden",
         "R2: Schalter umlegen",
         "R3: Kiste tragen",
         "R4: Memory-Puzzle",

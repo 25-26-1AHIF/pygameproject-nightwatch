@@ -380,10 +380,7 @@ class MemoryTask(Task):
 
 
 class ComboTask(Task):
-    """
-    Dreistelliger Code am Keller-Schloss.
-    Der Code steht in einem Hinweiszettel in R2.
-    """
+    # dreistelliger zahlencode am keller-schloss (kombination: 2-4-1)
 
     def __init__(self):
         super().__init__("R5_Keller", 300, 732)

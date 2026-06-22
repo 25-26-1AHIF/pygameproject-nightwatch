@@ -29,7 +29,7 @@ class JumpscareEffect:
         self._shake_x: int = 0
         self._shake_y: int = 0
 
-        # caught laeuft etwas laenger damit der uebergang funktioniert
+        # caught läuft etwas länger damit der uebergang funktioniert
         self.duration = 55 if typ == "caught" else 38
 
     @property
@@ -76,7 +76,7 @@ class JumpscareEffect:
         ov.set_alpha(int(160 * abklingen))
         surface.blit(ov, (0, 0))
 
-        # dezente rote vignette an den raendern
+        # dezente rote vignette an den rändern
         if phase < 0.6:
             vig = pygame.Surface((SW, SH), pygame.SRCALPHA)
             a   = int(80 * (1 - phase / 0.6))

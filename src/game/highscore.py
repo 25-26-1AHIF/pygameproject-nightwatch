@@ -7,7 +7,7 @@ from game_variables.game_variables import GameVariables
 SW = GameVariables.SCREEN_W
 SH = GameVariables.SCREEN_H
 
-HIGHSCORE_DATEI = os.path.join(os.path.dirname(__file__), "..", "highscores.json")
+_HIGHSCORE_DATEI = os.path.join(os.path.dirname(__file__), "..", "highscores.json")
 
 HighscoreEintrag = dict
 
@@ -15,10 +15,10 @@ HighscoreEintrag = dict
 def load_highscores() -> list[HighscoreEintrag]:
     # lädt die highscore-liste aus der json-datei
 
-    if not os.path.exists(HIGHSCORE_DATEI):
+    if not os.path.exists(_HIGHSCORE_DATEI):
         return []
     try:
-        with open(HIGHSCORE_DATEI, "r", encoding="utf-8") as f:
+        with open(_HIGHSCORE_DATEI, "r", encoding="utf-8") as f:
             data = json.load(f)
         valid = [
             e for e in data
@@ -44,9 +44,9 @@ def save_highscore(name: str, sekunden: float) -> int:
     eintraege = sorted(eintraege, key=lambda e: e["time"])[:10]
 
     try:
-        with open(HIGHSCORE_DATEI, "w", encoding="utf-8") as f:
+        with open(_HIGHSCORE_DATEI, "w", encoding="utf-8") as f:
             json.dump(eintraege, f, ensure_ascii=False, indent=2)
-    except:
+    except OSError:
         pass
 
     for i, e in enumerate(eintraege):

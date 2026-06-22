@@ -30,7 +30,7 @@ def angle_between(ax: float, ay: float, bx: float, by: float) -> float:
 
 
 def angle_diff(a: float, b: float) -> float:
-    # kürzeste winkeldifferenz (-180 bis 180 grad)
+    # kuerzeste winkeldifferenz (-180 bis 180 grad)
     d = (b - a) % 360
     if d > 180:
         d -= 360
@@ -47,8 +47,8 @@ def lerp(a: float, b: float, t: float) -> float:
     return a + (b - a) * clamp(t, 0.0, 1.0)
 
 
-def build_adj() -> dict[int, list[int]]:
-    # liste aus den kanten aufbauen
+def _build_adj() -> dict[int, list[int]]:
+    # adjazenzliste aus den kanten aufbauen
     adj: dict[int, list[int]] = {nid: [] for nid in NAV_NODES}
     for a, b in NAV_EDGES:
         adj[a].append(b)
@@ -56,11 +56,11 @@ def build_adj() -> dict[int, list[int]]:
     return adj
 
 
-_ADJ: dict[int, list[int]] = build_adj()
+_ADJ: dict[int, list[int]] = _build_adj()
 
 
 def nearest_node(x: float, y: float) -> int:
-    # naechsten navigationspunkt zur position finden
+    # nächsten navigationspunkt zur position finden
     best_id = 0
     best_d  = float("inf")
     for nid, (nx, ny) in NAV_NODES.items():
@@ -75,7 +75,7 @@ def nearest_node(x: float, y: float) -> int:
 # Claude Opus 4.8
 # Prompt: "Implementiere BFS-Wegfindung für ein Navigationsgraph-System in pygame."
 def bfs_path(start_id: int, goal_id: int) -> list[int]:
-    # kürzesten pfad vom start zum ziel suchen (breadth-first search)
+    # kuerzesten pfad vom start zum ziel suchen (breadth-first search)
     if start_id == goal_id:
         return [start_id]
 

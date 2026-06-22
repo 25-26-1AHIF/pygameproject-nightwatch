@@ -220,7 +220,7 @@ def _text_umbrechen(text: str, font: pygame.font.Font, max_b: int) -> list:
     return zeilen if zeilen else [text]
 
 
-# gecachtes hintergrundbild fuer das hauptmenue
+# gecachtes hintergrundbild für das hauptmenü
 _menu_bg: pygame.Surface | None = None
 
 

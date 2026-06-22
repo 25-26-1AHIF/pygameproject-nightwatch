@@ -1,57 +1,55 @@
 import json
 import os
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "..", "nightwatch_config.json")
+_CONFIG_PFAD = os.path.join(os.path.dirname(__file__), "..", "nightwatch_config.json")
 
-DEFAULTS: dict = {
-    "resolution":  "1080p",
-    "quality":     "Hoch",
-    "master_vol":  80,
-    "music_vol":   55,
-    "sfx_vol":     80,
+_STANDARDS: dict = {
+    "resolution": "1080p",
+    "quality":    "Hoch",
+    "master_vol": 80,
+    "music_vol":  55,
+    "sfx_vol":    80,
 }
 
-_data: dict = {}
+# aktuell geladene konfigurationswerte (wird beim import befüllt)
+_daten: dict = {}
 
 
 def load() -> None:
-    # lädt die konfigurationsdatei, oder legt standardwerte an
-
-    global _data
-    if os.path.exists(CONFIG_FILE):
+    # konfigurationsdatei laden oder standardwerte verwenden
+    _daten.clear()
+    if os.path.exists(_CONFIG_PFAD):
         try:
-            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-                loaded = json.load(f)
-            _data = {**DEFAULTS, **loaded}
+            with open(_CONFIG_PFAD, "r", encoding="utf-8") as f:
+                geladen = json.load(f)
+            _daten.update({**_STANDARDS, **geladen})
         except (json.JSONDecodeError, OSError):
-            _data = dict(DEFAULTS)
+            _daten.update(_STANDARDS)
     else:
-        _data = dict(DEFAULTS)
+        _daten.update(_STANDARDS)
 
 
 def save() -> None:
-    # schreibt die aktuelle konfiguration in die datei
-
+    # aktuelle konfiguration in datei schreiben
     try:
-        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            json.dump(_data, f, ensure_ascii=False, indent=2)
+        with open(_CONFIG_PFAD, "w", encoding="utf-8") as f:
+            json.dump(_daten, f, ensure_ascii=False, indent=2)
     except OSError as e:
         print(f"[Config] Konnte Konfiguration nicht speichern: {e}")
 
 
 def get(key: str, default=None):
-    # gibt einen konfigurationswert zurück
-
-    if not _data:
+    # einen konfigurationswert abfragen
+    if not _daten:
         load()
-    return _data.get(key, default if default is not None else DEFAULTS.get(key))
+    return _daten.get(key, default if default is not None else _STANDARDS.get(key))
 
 
 def set_val(key: str, value) -> None:
-    # setzt einen konfigurationswert (ohne sofortiges speichern)
-
-    if not _data:
+    # einen konfigurationswert setzen (noch nicht speichern)
+    if not _daten:
         load()
-    _data[key] = value
+    _daten[key] = value
+
 
 load()
