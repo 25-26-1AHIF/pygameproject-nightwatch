@@ -51,7 +51,6 @@ Das Spiel startet automatisch im Vollbild. Mit **F11** kann zwischen Vollbild un
 | pygame | 2.6.1 | Game-Framework (Fenster, Events, Zeichnen, Sound) |
 | numpy | >=1.26.0 | Film-Grain-Effekt (Beleuchtung), Sound-Generierung |
 | Pillow | >=10.0.0 | Sprite-Sheet-Generierung (Monster & Spieler) |
-| reportlab | >=4.0.0 | Generierung der PDF-Projektdokumentation |
 
 ---
 
