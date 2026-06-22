@@ -23,7 +23,6 @@ Version: 2.6.1
 Wird als Game-Framework verwendet (Fenster, Events, Grafik, Sound-Mixer).
 
 
-
 3. NumPy
 --------
 Lizenz:  BSD 3-Clause License
