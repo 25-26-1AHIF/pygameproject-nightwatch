@@ -59,7 +59,7 @@ Das Spiel startet automatisch im Vollbild. Mit **F11** kann zwischen Vollbild un
 ### Selbst entwickelt (Onur Gündüz & Fabian Bechter)
 
 - Gesamte Spiellogik (main.py, player.py, monster.py, items.py, level.py, hud.py, jumpscare.py, sounds.py, highscore.py, config.py, game_variables.py)
-- **Sprite-Generierung** (`gen_sprites.py`) – Monster- und Spieler-Sprites vollständig selbst gezeichnet mit pygame.draw und Pillow, keine externen Grafiken
+- **Sprite-Generierung** – Alle Level-Grafiken also Assets wie Boden, Wände wurden gezeichnet mit pygame.draw und Pillow, keine externen Grafiken
 - **Sound-Generierung** (`sounds.py`) – alle Sounds synthetisch via NumPy + wave generiert, keine externen Audio-Dateien
 - Levelaufbau mit 6 Haupträumen und 6 Verbindungsgängen
 - Alle 5 Aufgaben (Kerzen, Schalter, Kiste, Memory, Code)
