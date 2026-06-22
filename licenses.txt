@@ -23,6 +23,7 @@ Version: 2.6.1
 Wird als Game-Framework verwendet (Fenster, Events, Grafik, Sound-Mixer).
 
 
+
 3. NumPy
 --------
 Lizenz:  BSD 3-Clause License
@@ -37,6 +38,11 @@ und für die synthetische Sound-Generierung verwendet.
 --------------------------
 Monster-Sprites (assets/monster_sheet.png) und Spieler-Sprites
 (assets/player_sheet.png) wurden vollständig selbst gezeichnet. (Aseprite + Adobe Photoshop 2026)
+
+Für die Erstellung der Wände, Böden, Parkette, Teppiche usw. wurde
+pygame.draw + das Python Package "Pillow" verwendet.
+
+Somit werden keine externen Assets außer die (selbstgezeichneten) Spieler und Monster Assets benötigt.
 
 
 6. Sounds

@@ -77,7 +77,7 @@ def is_walkable(wx: float, wy: float) -> bool:
 
 
 def get_room_at(wx: float, wy: float) -> Room | None:
-    # gibt den raum zurueck in dem sich diese position befindet
+    # gibt den raum zürück in dem sich diese position befindet
     pt = pygame.Vector2(wx, wy)
     for room in ALL_ROOMS:
         if room.rect.collidepoint(pt):
@@ -87,7 +87,7 @@ def get_room_at(wx: float, wy: float) -> Room | None:
 
 def draw(surface: pygame.Surface, cam_x: int, cam_y: int,
          ketten_schwingung: float = 0.0) -> None:
-    # zeichnet alle raeume, boeden, tueren und die exit-tuer
+    # zeichnet alle räume, böden, türen und die exit-tür
     surface.fill(WAND_FARBE)
 
     for room in ALL_ROOMS:

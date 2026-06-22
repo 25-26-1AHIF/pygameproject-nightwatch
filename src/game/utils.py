@@ -7,12 +7,12 @@ NAV_EDGES = GameVariables.NAV_EDGES
 
 
 def vec_len(dx: float, dy: float) -> float:
-    # laenge eines 2d-vektors berechnen
+    # länge eines 2d-vektors berechnen
     return math.sqrt(dx * dx + dy * dy)
 
 
 def vec_norm(dx: float, dy: float) -> tuple[float, float]:
-    # vektor auf laenge 1 bringen (einheitsvektor)
+    # vektor auf länge 1 bringen (einheitsvektor)
     length = vec_len(dx, dy)
     if length == 0:
         return (0.0, 0.0)
@@ -30,7 +30,7 @@ def angle_between(ax: float, ay: float, bx: float, by: float) -> float:
 
 
 def angle_diff(a: float, b: float) -> float:
-    # kuerzeste winkeldifferenz (-180 bis 180 grad)
+    # kürzeste winkeldifferenz (-180 bis 180 grad)
     d = (b - a) % 360
     if d > 180:
         d -= 360
@@ -47,8 +47,8 @@ def lerp(a: float, b: float, t: float) -> float:
     return a + (b - a) * clamp(t, 0.0, 1.0)
 
 
-def _build_adj() -> dict[int, list[int]]:
-    # adjazenzliste aus den kanten aufbauen
+def build_adj() -> dict[int, list[int]]:
+    # liste aus den kanten aufbauen
     adj: dict[int, list[int]] = {nid: [] for nid in NAV_NODES}
     for a, b in NAV_EDGES:
         adj[a].append(b)
@@ -56,7 +56,7 @@ def _build_adj() -> dict[int, list[int]]:
     return adj
 
 
-_ADJ: dict[int, list[int]] = _build_adj()
+_ADJ: dict[int, list[int]] = build_adj()
 
 
 def nearest_node(x: float, y: float) -> int:
@@ -73,9 +73,9 @@ def nearest_node(x: float, y: float) -> int:
 
 # KI CODE ANFANG
 # Claude Opus 4.8
-# Prompt: "Implementiere BFS-Wegfindung fuer ein Navigationsgraph-System in pygame."
+# Prompt: "Implementiere BFS-Wegfindung für ein Navigationsgraph-System in pygame."
 def bfs_path(start_id: int, goal_id: int) -> list[int]:
-    # kuerzesten pfad vom start zum ziel suchen (breadth-first search)
+    # kürzesten pfad vom start zum ziel suchen (breadth-first search)
     if start_id == goal_id:
         return [start_id]
 
