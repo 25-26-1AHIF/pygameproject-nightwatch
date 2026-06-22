@@ -102,7 +102,7 @@ def bfs_path(start_id: int, goal_id: int) -> list[int]:
 
 def next_waypoint(monster_x: float, monster_y: float,
                   target_x: float, target_y: float) -> tuple[float, float]:
-    # naechsten wegpunkt auf dem bfs-pfad zum ziel zurueckgeben
+    # nächsten wegpunkt auf dem bfs-pfad zum ziel zurückgeben
     start = nearest_node(monster_x, monster_y)
     goal  = nearest_node(target_x,  target_y)
     path  = bfs_path(start, goal)

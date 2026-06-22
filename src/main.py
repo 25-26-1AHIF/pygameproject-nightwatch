@@ -24,7 +24,7 @@ GV = GameVariables
 
 
 class GameState(Enum):
-    # alle moeglichen spielzustaende
+    # alle möglichen spielzustände
     MENU       = auto()
     STEUERUNG  = auto()
     PLAYING    = auto()

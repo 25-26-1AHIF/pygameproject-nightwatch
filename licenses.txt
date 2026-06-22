@@ -1,56 +1,70 @@
-NIGHTWATCH – Lizenzen & Drittanbieter-Bibliotheken
-===================================================
+NIGHTWATCH – Lizenzen, Quellen & Herkunft der Inhalte
+======================================================
 
 Autoren:  Onur Gündüz, Fabian Bechter
 Schule:   HTL Rankweil  |  Klasse 1AHIF  |  Schuljahr 2025/26
 Projekt:  Endabgabe POS – Pygame Horrorspiel
+Datum:    22. Juni 2026
 
 
 1. Python
 ---------
-Lizenz: Python Software Foundation License (PSF)
-URL:    https://www.python.org/psf/license/
+Lizenz:  Python Software Foundation License (PSF)
+URL:     https://www.python.org/psf/license/
 Version: 3.12+
 
 
 2. pygame
 ---------
-Lizenz: GNU Lesser General Public License v2.1 (LGPL-2.1)
-URL:    https://www.pygame.org/
+Lizenz:  GNU Lesser General Public License v2.1 (LGPL-2.1)
+URL:     https://www.pygame.org/
 Version: 2.6.1
 
-pygame ist eine Bibliothek für Multimedia-Anwendungen auf Basis von SDL2.
+Wird als Game-Framework verwendet (Fenster, Events, Grafik, Sound-Mixer).
 
 
 3. NumPy
 --------
-Lizenz: BSD 3-Clause License
-URL:    https://numpy.org/
+Lizenz:  BSD 3-Clause License
+URL:     https://numpy.org/
 Version: >= 1.26.0
 
-Wird für den Musik-Loop und den Film-Grain-Effekt verwendet.
+Wird für den Film-Grain-Beleuchtungseffekt (8 vorberechnete Rauschtexturen)
+und für die synthetische Sound-Generierung verwendet.
 
 
-4. Pillow (PIL Fork)
---------------------
-Lizenz: Historical Permission Notice and Disclaimer (HPND)
-URL:    https://python-pillow.org/
-Version: >= 10.0.0
-
-Wird zum Generieren der Sprite-Sheets beim ersten Start verwendet.
+5. Spielgrafiken (Sprites)
+--------------------------
+Monster-Sprites (assets/monster_sheet.png) und Spieler-Sprites
+(assets/player_sheet.png) wurden vollständig selbst gezeichnet. (Aseprite + Adobe Photoshop 2026)
 
 
-5. Spielinhalte / Assets
-------------------------
-Alle Grafiken werden prozedural mit Pillow und pygame.draw generiert.
-Alle Sounds werden prozedural mit NumPy generiert.
-Keine externen Bild- oder Audiodateien eingebettet.
+6. Sounds
+---------
+Alle Sounds (Schritte, Taschenlampen-Klick, Dash, Alert, Jumpscare,
+Herzschlag, Umgebungsgeräusche) wurden synthetisch generiert.
+Werkzeuge: Python wave-Modul + NumPy.
+Keine externen Audio-Dateien eingebettet.
 
 
-6. KI-Unterstützung (gekennzeichnete Stellen)
-----------------------------------------------
+7. Menü- und Pause-Hintergrundbilder (KI-generiert)
+----------------------------------------------------
+assets/menu_bg.png   – Hintergrundbild des Hauptmenüs
+assets/pause_bg.png  – Hintergrundbild des Pause-Menüs
+
+Diese beiden PNG-Dateien wurden mit ChatGPT Image (DALL-E, OpenAI)
+generiert. Prompt-Stil: dunkles Pixel-Art-Horror-Setting, Nachtszene
+mit Mond, Laterne und Monster in einer Tür.
+
+Die Bilder werden ausschließlich als dekorativer Hintergrund in den
+Menü-Screens verwendet. Die gesamte Spielgrafik während des Spiels
+ist prozedural durch Code erzeugt.
+
+
+8. KI-Unterstützung im Code (gekennzeichnete Stellen)
+------------------------------------------------------
 Algorithmisch anspruchsvolle Abschnitte wurden mit Claude Opus 4.8
-(Anthropic) erstellt. Diese Stellen sind im Code markiert mit:
+(Anthropic) entwickelt. Diese Stellen sind im Code eindeutig markiert:
 
     # KI CODE ANFANG
     # Claude Opus 4.8
@@ -58,9 +72,21 @@ Algorithmisch anspruchsvolle Abschnitte wurden mit Claude Opus 4.8
     ...
     # KI CODE ENDE
 
-Betroffene Dateien:
-- src/game/utils.py        – BFS-Wegfindung (bfs_path, next_waypoint)
-- src/game/lighting.py     – Film-Grain, Taschenlampen-Lichtkegel
-- src/game/monster.py      – Monster-Bewegungslogik (_bewege)
-- src/game/sounds.py       – Horror-Ambient-Loop (make_bg_music)
-- src/main.py              – ZoomCamera-Klasse, PauseMenu-Klasse
+Betroffene Dateien und Abschnitte:
+
+- src/main.py
+    ZoomCamera-Klasse (Lerp-Zoom-Kamerasystem)
+
+- src/game/monster.py
+    Monster._bewege()-Methode
+    (Bewegung mit Vektornormalisierung, Wandkollision, BFS-Pfad)
+
+- src/game/lighting.py
+    Lighting._filmkorn_erstellen() – Film-Grain via NumPy
+    Lighting._lichtkegel_zeichnen() – Taschenlampen-Lichtkegel-Polygon
+
+- src/game/utils.py
+    bfs_path() und next_waypoint() – BFS-Wegfindung auf Navigationsgraph
+
+Die PauseMenu-Klasse (ursprünglich KI-markiert) wurde im Zuge der
+Vereinfachung vollständig durch eigenen einfacheren Code ersetzt.
