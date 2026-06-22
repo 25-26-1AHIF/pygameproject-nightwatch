@@ -46,10 +46,11 @@ Das Spiel startet automatisch im Vollbild. Mit **F11** kann zwischen Vollbild un
 
 ## Abhängigkeiten
 
-| Paket | Version | Verwendung |
-|---|---|---|
-| pygame | 2.6.1 | Game-Framework (Fenster, Events, Zeichnen, Sound) |
-| numpy | >=1.26.0 | Film-Grain-Effekt (Beleuchtung), Sound-Generierung |
+| Paket                | Version | Verwendung                                         |
+|----------------------|---|----------------------------------------------------|
+| pygame               | 2.6.1 | Game-Framework (Fenster, Events, Zeichnen, Sound)  |
+| pygame.draw & Pillow | 10.0.0 | Erstellung von Level Grafiken                      |
+| numpy                | >=1.26.0 | Film-Grain-Effekt (Beleuchtung), Sound-Generierung |
 
 ---
 
