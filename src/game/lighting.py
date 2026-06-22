@@ -14,7 +14,7 @@ DUNKEL_GANG   = 240
 
 
 class Lighting:
-    """Beleuchtungs-system: taschenlampe, kerzen, filmkorn, vignette."""
+    # beleuchtungs-system: taschenlampe, kerzen, filmkorn, vignette
 
     def __init__(self):
         self._dark = pygame.Surface((SW, SH), pygame.SRCALPHA)
@@ -39,7 +39,8 @@ class Lighting:
     # haben. Nutze pygame.surfarray.blit_array und transponiere das Array korrekt
     # (Spalten/Zeilen-Reihenfolge). Bei Import-Fehler Fallback ohne Grain."
     def _filmkorn_erstellen(self) -> None:
-        """Generiert 8 Filmkorn-Surfaces via numpy (Fallback: leere Surfaces)."""
+        # generiert 8 filmkorn-surfaces via numpy (fallback: leere surfaces)
+
         try:
             import numpy as np
             for _ in range(8):
@@ -60,7 +61,8 @@ class Lighting:
     # KI CODE ENDE
 
     def update(self) -> None:
-        """Aktualisiert Flackerstatus und Filmkorn-Index einmal pro Frame."""
+        # aktualisiert flackerstatus und filmkorn-index einmal pro frame
+
         self._grain_idx = (self._grain_idx + 1) % len(self._grain_frames)
 
         self._flicker_timer += 1
@@ -80,7 +82,8 @@ class Lighting:
                    current_room,
                    candle_positions: list[tuple[float, float]],
                    cam_x: int, cam_y: int) -> None:
-        """Zeichnet die Dunkelheitsmaske auf die View-Surface."""
+        # zeichnet die dunkelheitsmaske auf die view-surface
+
         sw, sh = surface.get_size()
 
         if self._dark_size != (sw, sh):
@@ -117,14 +120,16 @@ class Lighting:
         surface.blit(self._dark, (0, 0))
 
     def draw_overlay(self, surface: pygame.Surface) -> None:
-        """Zeichnet Filmkorn und Vignette auf den fertigen Frame."""
+        # zeichnet filmkorn und vignette auf den fertigen frame
+
         if self._grain_frames:
             surface.blit(self._grain_frames[self._grain_idx], (0, 0))
         self._vignette_zeichnen(surface)
 
     def draw(self, surface, player_sx, player_sy, torch_angle,
              battery, torch_on, current_room, candle_positions, cam_x, cam_y):
-        """Kombinations-Methode für Abwärtskompatibilität."""
+        # kombinations-methode für abwärtskompatibilität
+
         self.draw_world(surface, player_sx, player_sy, torch_angle, battery,
                         torch_on, current_room, candle_positions, cam_x, cam_y)
         self.draw_overlay(surface)
@@ -139,7 +144,8 @@ class Lighting:
     def _lichtkegel_zeichnen(self, cx: float, cy: float,
                               angle_deg: float, laenge: int,
                               extra_alpha: int = 0) -> None:
-        """Zeichnet den Lichtkegel der Taschenlampe als Polygon."""
+        # zeichnet den lichtkegel der taschenlampe als polygon
+
         halb     = TA
         segmente = 30
         start    = math.radians(angle_deg - halb)
@@ -159,7 +165,8 @@ class Lighting:
     # KI CODE ENDE
 
     def _kerzenlicht_zeichnen(self, sx: float, sy: float, radius: int | None = None) -> None:
-        """Zeichnet einen weichen Kerzen-Lichthof durch mehrere überlagerte Kreise."""
+        # zeichnet einen weichen kerzen-lichthof durch mehrere überlagerte kreise
+
         r = radius if radius is not None else self._kerzen_radius
         for ring in range(r, 0, -6):
             alpha = max(0, DUNKEL_INNEN - int(
@@ -168,7 +175,8 @@ class Lighting:
             pygame.draw.circle(self._dark, (0, 0, 0, alpha), (int(sx), int(sy)), ring)
 
     def _vignette_zeichnen(self, surface: pygame.Surface) -> None:
-        """Dunkle Horror-Vignette an den Bildschirmrändern."""
+        # dunkle horror-vignette an den bildschirmrändern
+
         sw, sh = surface.get_size()
         vig    = pygame.Surface((sw, sh), pygame.SRCALPHA)
         rand   = 200

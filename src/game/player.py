@@ -9,7 +9,7 @@ GV = GameVariables
 
 
 class Player:
-    """Der Spieler-Charakter mit Bewegung, Dash, Taschenlampe und Geräuschpegel."""
+    # der spieler-charakter mit bewegung, dash, taschenlampe und geräuschpegel
 
     # wie oft pro frame ein schritt-sound abgespielt wird
     _SCHRITT_HART:  int = 22
@@ -62,7 +62,8 @@ class Player:
                mx: int, my: int,
                cam_x: int, cam_y: int,
                sounds) -> None:
-        """Einmal pro frame aufgerufen – verarbeitet eingaben und aktualisiert zustand."""
+        # einmal pro frame aufgerufen – verarbeitet eingaben und aktualisiert zustand
+
         self.dash_just_activated = False
 
         for ev in events:
@@ -167,7 +168,8 @@ class Player:
                     self.reached_exit = True
 
     def draw(self, surface: pygame.Surface, cam_x: int, cam_y: int) -> None:
-        """Spieler und dash-effekt auf die view-surface zeichnen."""
+        # spieler und dash-effekt auf die view-surface zeichnen
+
         sx = int(self.x - cam_x)
         sy = int(self.y - cam_y)
 

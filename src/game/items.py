@@ -8,7 +8,7 @@ GV = GameVariables
 
 
 class Key:
-    """Ein aufsammelbarer Schlüssel mit Bob-Animation."""
+    # ein aufsammelbarer schlüssel mit bob-animation
 
     def __init__(self, x: float, y: float, key_id: int):
         self.x         = x
@@ -18,11 +18,13 @@ class Key:
         self._bob_timer = random.uniform(0, math.pi * 2)
 
     def update(self) -> None:
-        """Aktualisiert die Bob-Animation einmal pro Frame."""
+        # aktualisiert die bob-animation einmal pro frame
+
         self._bob_timer += 0.07
 
     def try_collect(self, player_x: float, player_y: float) -> bool:
-        """Gibt True zurück wenn der Spieler nah genug ist und eingesammelt wurde."""
+        # gibt true zurück wenn der spieler nah genug ist und eingesammelt wurde
+
         if self.collected:
             return False
         if dist(self.x, self.y, player_x, player_y) < 30:
@@ -55,7 +57,7 @@ class Key:
 
 
 class Task:
-    """Abstrakte Basis für alle fünf Spielaufgaben."""
+    # abstrakte basis für alle fünf spielaufgaben
 
     def __init__(self, room_name: str, x: float, y: float):
         self.room_name = room_name
@@ -66,7 +68,8 @@ class Task:
 
     @property
     def key(self) -> "Key | None":
-        """Der gespawnte Schlüssel nach Aufgabenabschluss."""
+        # der gespawnte schlüssel nach aufgabenabschluss
+
         return self._key
 
     def interact(self, player_x: float, player_y: float,
@@ -78,7 +81,7 @@ class Task:
 
 
 class CandleTask(Task):
-    """Alle 5 Kerzen im Wohnzimmer müssen mit [E] angezündet werden."""
+    # alle 5 kerzen im wohnzimmer müssen mit [e] angezündet werden
 
     def __init__(self):
         super().__init__("R1_Wohnzimmer", 300, 228)
@@ -93,7 +96,8 @@ class CandleTask(Task):
 
     @property
     def lit_positions(self) -> list[tuple[float, float]]:
-        """Liste der Weltkoordinaten bereits brennender Kerzen."""
+        # liste der weltkoordinaten bereits brennender kerzen
+
         return [(k["x"], k["y"]) for k in self._kerzen if k["lit"]]
 
     def interact(self, player_x, player_y, keys_pressed, events) -> bool:
@@ -144,7 +148,7 @@ class CandleTask(Task):
 
 
 class SwitchTask(Task):
-    """Alle 3 Schalter in der Küche müssen umgelegt werden."""
+    # alle 3 schalter in der küche müssen umgelegt werden
 
     def __init__(self):
         super().__init__("R2_Küche", 756, 228)
@@ -194,7 +198,7 @@ class SwitchTask(Task):
 
 
 class BoxTask(Task):
-    """Eine Kiste muss im Schlafzimmer zur Zielmarkierung getragen werden."""
+    # eine kiste muss im schlafzimmer zur zielmarkierung getragen werden
 
     def __init__(self):
         super().__init__("R3_Schlafzimmer", 1100, 150)
@@ -220,7 +224,8 @@ class BoxTask(Task):
         return False
 
     def update_carry(self, player_x: float, player_y: float) -> None:
-        """Bewegt die Kiste mit dem Spieler wenn sie getragen wird."""
+        # bewegt die kiste mit dem spieler wenn sie getragen wird
+
         if self._traegt:
             self._kiste_x = player_x + 20
             self._kiste_y = player_y + 20
@@ -253,7 +258,7 @@ class BoxTask(Task):
 
 
 class MemoryTask(Task):
-    """Zufällige Symbolsequenz merken und korrekt eingeben (Tasten 1-6)."""
+    # zufällige symbolsequenz merken und korrekt eingeben (tasten 1-6)
 
     SYMBOLE = ["★", "♦", "▲", "●", "◆", "■"]
 
@@ -455,7 +460,7 @@ class ComboTask(Task):
 
 
 class HintNote:
-    """Ein lesbarer Hinweiszettel für den Zahlenkombinations-Code."""
+    # ein lesbarer hinweiszettel für den zahlenkombinations-code
 
     def __init__(self, x: float, y: float, hinweis_text: str):
         self.x            = x
@@ -508,7 +513,7 @@ class HintNote:
 
 
 class BatteryPickup:
-    """eine batterie zum aufladen – kann nur eingesammelt werden wenn akku unter 15% ist."""
+    # eine batterie zum aufladen – kann nur eingesammelt werden wenn akku unter 15% ist
 
     WIEDERHERSTELLUNG = 40.0   # wie viel prozent akku man bekommt
     SAMMEL_ABSTAND    = 35     # wie nah man rangehen muss
@@ -525,7 +530,8 @@ class BatteryPickup:
 
     def try_collect(self, player_x: float, player_y: float,
                     player_battery: float, events: list) -> float:
-        """gibt die akkumenge zurück die hinzugefügt werden soll (0.0 wenn nichts)."""
+        # gibt die akkumenge zurück die hinzugefügt werden soll (0.0 wenn nichts)
+
         if self.collected:
             return 0.0
         if dist(player_x, player_y, self.x, self.y) >= self.SAMMEL_ABSTAND:
@@ -575,7 +581,7 @@ class BatteryPickup:
 
 
 class ItemManager:
-    """Verwaltet alle Aufgaben, Schlüssel und Hinweiszettel im Spiel."""
+    # verwaltet alle aufgaben, schlüssel und hinweiszettel im spiel
 
     def __init__(self, sounds):
         self._sounds = sounds
@@ -613,7 +619,8 @@ class ItemManager:
     def update(self, player_x: float, player_y: float,
                events: list, keys_pressed: set,
                player_battery: float = 100.0) -> float:
-        """einmal pro frame – gibt aufgeladene akkumenge zurück (0 wenn nichts eingesammelt)."""
+        # einmal pro frame – gibt aufgeladene akkumenge zurück (0 wenn nichts eingesammelt)
+
         self.box_task.update_carry(player_x, player_y)
 
         for i, task in enumerate(self._tasks):
@@ -650,12 +657,14 @@ class ItemManager:
 
     @property
     def all_tasks_done(self) -> bool:
-        """True wenn alle 5 Aufgaben abgeschlossen sind."""
+        # true wenn alle 5 aufgaben abgeschlossen sind
+
         return all(t.completed for t in self._tasks)
 
     @property
     def lit_candle_positions(self) -> list[tuple[float, float]]:
-        """Weltkoordinaten aller brennenden Kerzen (für die Lichtberechnung)."""
+        # weltkoordinaten aller brennenden kerzen (für die lichtberechnung)
+
         if not self.candle_task.completed:
             return self.candle_task.lit_positions
         return [(k["x"], k["y"]) for k in self.candle_task._kerzen]
@@ -664,7 +673,8 @@ class ItemManager:
              cam_x: int, cam_y: int,
              player_x: float, player_y: float,
              player_battery: float = 100.0) -> None:
-        """zeichnet alle items, aufgaben, hinweise und batterie-pickups."""
+        # zeichnet alle items, aufgaben, hinweise und batterie-pickups
+
         self.candle_task.draw_with_player(surface, cam_x, cam_y, player_x, player_y)
         self.switch_task.draw_with_player(surface, cam_x, cam_y, player_x, player_y)
         self.box_task.draw_with_player(surface, cam_x, cam_y, player_x, player_y)

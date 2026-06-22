@@ -15,7 +15,8 @@ _data: dict = {}
 
 
 def load() -> None:
-    """Lädt die Konfigurationsdatei, oder legt Standardwerte an."""
+    # lädt die konfigurationsdatei, oder legt standardwerte an
+
     global _data
     if os.path.exists(_CONFIG_FILE):
         try:
@@ -29,7 +30,8 @@ def load() -> None:
 
 
 def save() -> None:
-    """Schreibt die aktuelle Konfiguration in die Datei."""
+    # schreibt die aktuelle konfiguration in die datei
+
     try:
         with open(_CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(_data, f, ensure_ascii=False, indent=2)
@@ -38,14 +40,16 @@ def save() -> None:
 
 
 def get(key: str, default=None):
-    """Gibt einen Konfigurationswert zurück."""
+    # gibt einen konfigurationswert zurück
+
     if not _data:
         load()
     return _data.get(key, default if default is not None else _DEFAULTS.get(key))
 
 
 def set_val(key: str, value) -> None:
-    """Setzt einen Konfigurationswert (ohne sofortiges Speichern)."""
+    # setzt einen konfigurationswert (ohne sofortiges speichern)
+
     if not _data:
         load()
     _data[key] = value

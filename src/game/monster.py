@@ -38,7 +38,7 @@ _hear_base    = GV.MONSTER_HOER
 
 
 class Monster:
-    """Das Monster – verfolgt und fängt den Spieler."""
+    # das monster – verfolgt und fängt den spieler
 
     def __init__(self, x: float, y: float):
         self.x: float = x
@@ -70,7 +70,8 @@ class Monster:
     def update(self, player_x: float, player_y: float,
                player_noise: float, player_battery: float,
                sounds) -> None:
-        """ki-update einmal pro frame – zustandsübergänge und bewegung."""
+        # ki-update einmal pro frame – zustandsübergänge und bewegung
+
         self.just_triggered_jumpscare = False
         self._vorher_state = self.state
 
@@ -190,7 +191,8 @@ class Monster:
     # Spieler direkt via BFS). Vektornormalisierung für konstante Geschwindigkeit,
     # Wandkollision durch axis-separierte Bewegung."
     def _bewege(self, speed: float, px: float, py: float) -> None:
-        """Bewegt das Monster je nach Zustand zum richtigen Ziel."""
+        # bewegt das monster je nach zustand zum richtigen ziel
+
         if self.state == MonsterState.HUNT:
             ziel_x, ziel_y = next_waypoint(self.x, self.y, px, py)
             if dist(self.x, self.y, ziel_x, ziel_y) < 40:
@@ -224,7 +226,8 @@ class Monster:
     # KI CODE ENDE
 
     def _naechster_wegpunkt(self, px: float, py: float) -> None:
-        """Wählt den nächsten Wegpunkt je nach Zustand."""
+        # wählt den nächsten wegpunkt je nach zustand
+
         if self.state == MonsterState.PATROL:
             self._routen_idx = (self._routen_idx + 1) % len(self._route)
             self._wegpunkt   = GV.NAV_NODES[self._route[self._routen_idx]]
@@ -237,12 +240,14 @@ class Monster:
                 self._wegpunkt = GV.NAV_NODES[nahe]
 
     def stun(self, dauer: int) -> None:
-        """Betäubt das Monster für eine bestimmte Anzahl Frames."""
+        # betäubt das monster für eine bestimmte anzahl frames
+
         self._stun_timer = dauer
         self.is_stunned  = True
 
     def apply_difficulty(self, diff: dict) -> None:
-        """Wendet Schwierigkeitsgrad-Einstellungen auf die Monster-Werte an."""
+        # wendet schwierigkeitsgrad-einstellungen auf die monster-werte an
+
         global _speed_patrol, _speed_alert, _speed_hunt
         global _sight_range, _hear_parkett, _hear_fliesen, _hear_teppich, _hear_base
         _speed_patrol = diff["patrol"]
@@ -256,11 +261,13 @@ class Monster:
         _hear_base    = int(180 * hf)
 
     def catches_player(self, px: float, py: float) -> bool:
-        """True wenn das Monster nah genug am Spieler ist um zu fangen."""
+        # true wenn das monster nah genug am spieler ist um zu fangen
+
         return dist(self.x, self.y, px, py) <= GV.MONSTER_RADIUS + 14
 
     def draw(self, surface: pygame.Surface, cam_x: int, cam_y: int) -> None:
-        """Zeichnet das Monster auf die View-Surface."""
+        # zeichnet das monster auf die view-surface
+
         sx = int(self.x - cam_x)
         sy = int(self.y - cam_y)
 
@@ -295,7 +302,8 @@ class Monster:
             surface.blit(txt, (sx - 5, sy - 48))
 
     def draw_state_indicator(self, surface: pygame.Surface) -> None:
-        """Kleiner Zustandsindikator oben links."""
+        # kleiner zustandsindikator oben links
+
         farb_map = {
             MonsterState.PATROL: (40, 160, 60),
             MonsterState.ALERT:  (200, 150, 20),

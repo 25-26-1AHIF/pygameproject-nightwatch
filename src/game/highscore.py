@@ -13,7 +13,8 @@ HighscoreEintrag = dict
 
 
 def load_highscores() -> list[HighscoreEintrag]:
-    """Lädt die Highscore-Liste aus der JSON-Datei."""
+    # lädt die highscore-liste aus der json-datei
+
     if not os.path.exists(_HIGHSCORE_DATEI):
         return []
     try:
@@ -30,7 +31,8 @@ def load_highscores() -> list[HighscoreEintrag]:
 
 
 def save_highscore(name: str, sekunden: float) -> int:
-    """Speichert einen neuen Eintrag und gibt den erreichten Rang zurück."""
+    # speichert einen neuen eintrag und gibt den erreichten rang zurück
+
     eintraege = load_highscores()
 
     neuer = HighscoreEintrag({
@@ -54,7 +56,8 @@ def save_highscore(name: str, sekunden: float) -> int:
 
 
 def draw_highscore_screen(surface, clock_ms: int) -> None:
-    """Zeichnet den kompletten Highscore-Bildschirm."""
+    # zeichnet den kompletten highscore-bildschirm
+
     surface.fill((5, 5, 15))
 
     fnt_titel = pygame.font.SysFont("monospace", 48, bold=True)

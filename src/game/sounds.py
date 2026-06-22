@@ -7,7 +7,8 @@ SAMPLE_RATE: int = 44100
 
 
 def _make_sound(samples: np.ndarray) -> pygame.mixer.Sound:
-    """Wandelt ein float32-Array in einen pygame.Sound um."""
+    # wandelt ein float32-array in einen pygame.sound um
+
     s   = np.clip(samples, -1.0, 1.0)
     s16 = (s * 32767).astype(np.int16)
     stereo = np.column_stack([s16, s16])
@@ -16,7 +17,8 @@ def _make_sound(samples: np.ndarray) -> pygame.mixer.Sound:
 
 def _sinus(freq: float, dauer: float, amp: float = 0.5,
            fade: bool = True) -> np.ndarray:
-    """Einfacher Sinuston."""
+    # einfacher sinuston
+
     n = int(SAMPLE_RATE * dauer)
     t = np.linspace(0, dauer, n, endpoint=False)
     w = amp * np.sin(2 * math.pi * freq * t)
@@ -26,19 +28,22 @@ def _sinus(freq: float, dauer: float, amp: float = 0.5,
 
 
 def _rauschen(dauer: float, amp: float = 0.3) -> np.ndarray:
-    """Weißes Rauschen."""
+    # weißes rauschen
+
     n = int(SAMPLE_RATE * dauer)
     return (np.random.uniform(-1, 1, n) * amp).astype(np.float32)
 
 
 def _verzerren(wave: np.ndarray, staerke: float = 0.6) -> np.ndarray:
-    """Weiche Clipping-Verzerrung für Horror-Sounds."""
+    # weiche clipping-verzerrung für horror-sounds
+
     return np.tanh(wave * (1 + staerke * 8)) / (1 + staerke * 0.5)
 
 
 def _reverb(wave: np.ndarray, delay_ms: float = 60,
             abklingen: float = 0.35) -> np.ndarray:
-    """Einfaches Echo/Reverb durch verzögertes Überlagern."""
+    # einfaches echo/reverb durch verzögertes überlagern
+
     delay_s = int(SAMPLE_RATE * delay_ms / 1000)
     out = wave.copy()
     if delay_s < len(out):
@@ -47,14 +52,16 @@ def _reverb(wave: np.ndarray, delay_ms: float = 60,
 
 
 def _tiefpass(wave: np.ndarray, grenz_ratio: float = 0.15) -> np.ndarray:
-    """Sehr einfacher Tiefpassfilter (gleitender Durchschnitt)."""
+    # sehr einfacher tiefpassfilter (gleitender durchschnitt)
+
     fenster = max(2, int(1.0 / grenz_ratio))
     kernel  = np.ones(fenster) / fenster
     return np.convolve(wave, kernel, mode="same")
 
 
 def make_heartbeat() -> pygame.mixer.Sound:
-    """Tiefer, verzerrter Herzschlag für Horror-Atmosphäre."""
+    # tiefer, verzerrter herzschlag für horror-atmosphäre
+
     sr = SAMPLE_RATE
     d1 = 0.09
     d2 = 0.07
@@ -81,7 +88,8 @@ def make_heartbeat() -> pygame.mixer.Sound:
 
 
 def make_footstep_hard() -> pygame.mixer.Sound:
-    """Schwerer Schritt auf Parkett/Fliesen."""
+    # schwerer schritt auf parkett/fliesen
+
     dauer = 0.10
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -93,7 +101,8 @@ def make_footstep_hard() -> pygame.mixer.Sound:
 
 
 def make_footstep_soft() -> pygame.mixer.Sound:
-    """Gedämpfter Schritt auf Teppich."""
+    # gedämpfter schritt auf teppich
+
     dauer = 0.12
     n     = int(SAMPLE_RATE * dauer)
     rau   = _rauschen(dauer, 0.10)[:n]
@@ -103,7 +112,8 @@ def make_footstep_soft() -> pygame.mixer.Sound:
 
 
 def make_footstep_hard_var2() -> pygame.mixer.Sound:
-    """Zweite Schritt-Variante für Abwechslung."""
+    # zweite schritt-variante für abwechslung
+
     dauer = 0.09
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -113,7 +123,8 @@ def make_footstep_hard_var2() -> pygame.mixer.Sound:
 
 
 def make_jumpscare_scream() -> pygame.mixer.Sound:
-    """Erschreckender Schrei mit Pitch-Slide."""
+    # erschreckender schrei mit pitch-slide
+
     dauer = 1.4
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -138,7 +149,8 @@ def make_jumpscare_scream() -> pygame.mixer.Sound:
 
 
 def make_alert_sting() -> pygame.mixer.Sound:
-    """Kurzer Warnton wenn Monster Spieler bemerkt."""
+    # kurzer warnton wenn monster spieler bemerkt
+
     dauer = 0.45
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -148,7 +160,8 @@ def make_alert_sting() -> pygame.mixer.Sound:
 
 
 def make_key_pickup() -> pygame.mixer.Sound:
-    """Heller Pickup-Sound beim Aufsammeln eines Schlüssels."""
+    # heller pickup-sound beim aufsammeln eines schlüssels
+
     s1 = _sinus(523.25, 0.09, 0.42)
     s2 = _sinus(659.25, 0.09, 0.42)
     s3 = _sinus(783.99, 0.22, 0.48)
@@ -156,7 +169,8 @@ def make_key_pickup() -> pygame.mixer.Sound:
 
 
 def make_task_complete() -> pygame.mixer.Sound:
-    """Positiver Jingle bei Aufgabenabschluss."""
+    # positiver jingle bei aufgabenabschluss
+
     segmente = [_sinus(f, 0.07, 0.38) for f in [392, 523.25, 659.25, 783.99]]
     letzt    = _sinus(1046.5, 0.28, 0.45)
     return _make_sound(np.concatenate(segmente + [letzt]))
@@ -170,7 +184,8 @@ def make_task_complete() -> pygame.mixer.Sound:
 # Thumps (Herzschlag-ähnlich) und Hintergrundrauschen. Füge einen seamless crossfade
 # am Anfang und Ende ein damit der Loop nahtlos ist."
 def make_bg_music() -> pygame.mixer.Sound:
-    """24-sekündiger Horror-Ambient-Loop mit mehreren überlagerten Schichten."""
+    # 24-sekündiger horror-ambient-loop mit mehreren überlagerten schichten
+
     dauer = 24.0
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -213,7 +228,8 @@ def make_bg_music() -> pygame.mixer.Sound:
 
 
 def make_ambient_horror() -> pygame.mixer.Sound:
-    """Kurzer Horror-Ambiente-Loop (4 Sekunden)."""
+    # kurzer horror-ambiente-loop (4 sekunden)
+
     dauer = 4.0
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -233,7 +249,8 @@ def make_ambient_horror() -> pygame.mixer.Sound:
 
 
 def make_wall_creak() -> pygame.mixer.Sound:
-    """Gruseliges Wandknarren für Wandgesichter-Jumpscares."""
+    # gruseliges wandknarren für wandgesichter-jumpscares
+
     dauer = 0.8
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -245,7 +262,8 @@ def make_wall_creak() -> pygame.mixer.Sound:
 
 
 def make_hanging_drop() -> pygame.mixer.Sound:
-    """Schweres Aufschlagen für hängende Figur."""
+    # schweres aufschlagen für hängende figur
+
     dauer = 0.6
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -256,7 +274,8 @@ def make_hanging_drop() -> pygame.mixer.Sound:
 
 
 def make_shadow_rush() -> pygame.mixer.Sound:
-    """Whoosh-Sound für Schatten-Jumpscare."""
+    # whoosh-sound für schatten-jumpscare
+
     dauer = 0.5
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -267,7 +286,8 @@ def make_shadow_rush() -> pygame.mixer.Sound:
 
 
 def make_blackout_sound() -> pygame.mixer.Sound:
-    """Tiefes Grollen + hoher Pfiff für Blackout-Jumpscare."""
+    # tiefes grollen + hoher pfiff für blackout-jumpscare
+
     dauer = 2.5
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -286,7 +306,8 @@ def make_blackout_sound() -> pygame.mixer.Sound:
 
 
 def make_monster_breathing() -> pygame.mixer.Sound:
-    """Tiefer, verzerrter Atemgeräusch-Loop für das Monster."""
+    # tiefer, verzerrter atemgeräusch-loop für das monster
+
     dauer    = 2.8
     n        = int(SAMPLE_RATE * dauer)
     t        = np.linspace(0, dauer, n, endpoint=False)
@@ -301,7 +322,8 @@ def make_monster_breathing() -> pygame.mixer.Sound:
 
 
 def make_door_creak() -> pygame.mixer.Sound:
-    """Türknarren."""
+    # türknarren
+
     dauer = 0.7
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -313,7 +335,8 @@ def make_door_creak() -> pygame.mixer.Sound:
 
 
 def make_torch_click() -> pygame.mixer.Sound:
-    """Klick-Sound beim Umschalten der Taschenlampe."""
+    # klick-sound beim umschalten der taschenlampe
+
     dauer = 0.05
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -322,7 +345,8 @@ def make_torch_click() -> pygame.mixer.Sound:
 
 
 def make_whisper() -> pygame.mixer.Sound:
-    """Kaum hörbares Flüstern für Atmosphäre."""
+    # kaum hörbares flüstern für atmosphäre
+
     dauer = 1.8
     n     = int(SAMPLE_RATE * dauer)
     rau   = _tiefpass(_rauschen(dauer, 0.12)[:n], 0.3)
@@ -331,7 +355,8 @@ def make_whisper() -> pygame.mixer.Sound:
 
 
 def make_dash() -> pygame.mixer.Sound:
-    """Kurzer Whoosh für den Dash."""
+    # kurzer whoosh für den dash
+
     dauer = 0.18
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -342,7 +367,8 @@ def make_dash() -> pygame.mixer.Sound:
 
 
 def make_drip() -> pygame.mixer.Sound:
-    """Wassertropfen für den Keller (R5)."""
+    # wassertropfen für den keller (r5)
+
     dauer = 0.25
     n     = int(SAMPLE_RATE * dauer)
     t     = np.linspace(0, dauer, n, endpoint=False)
@@ -352,7 +378,7 @@ def make_drip() -> pygame.mixer.Sound:
 
 
 class SoundManager:
-    """Verwaltet alle generierten Sounds und ihre Lautstärken."""
+    # verwaltet alle generierten sounds und ihre lautstärken
 
     def __init__(self):
         if not pygame.mixer.get_init():
@@ -370,7 +396,8 @@ class SoundManager:
         self._alle_generieren()
 
     def _alle_generieren(self) -> None:
-        """Generiert alle Sounds und setzt Basislautstärken."""
+        # generiert alle sounds und setzt basislautstärken
+
         generator_map = {
             "heartbeat":      make_heartbeat,
             "step_hard":      make_footstep_hard,
@@ -500,7 +527,8 @@ class SoundManager:
 
     def apply_volume_settings(self, master_vol: int,
                                music_vol: int, sfx_vol: int) -> None:
-        """Wendet alle Lautstärkeeinstellungen in einem Schritt an."""
+        # wendet alle lautstärkeeinstellungen in einem schritt an
+
         m  = master_vol / 100.0
         mu = music_vol  / 100.0
         sf = sfx_vol    / 100.0
@@ -518,7 +546,8 @@ class SoundManager:
             snd.set_volume(max(0.0, min(1.0, self._musik_basis * m * mu)))
 
     def stop_all(self) -> None:
-        """Stoppt sämtliche Sounds."""
+        # stoppt sämtliche sounds
+
         pygame.mixer.stop()
         self._kanal_ambient = None
         self._kanal_atem    = None

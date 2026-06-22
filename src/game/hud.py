@@ -5,15 +5,13 @@ from game_variables.game_variables import GameVariables
 SW  = GameVariables.SCREEN_W
 SH  = GameVariables.SCREEN_H
 DC  = GameVariables.DASH_COOLDOWN
-WS  = (255, 255, 255)
 AK  = GameVariables.AKKU_FARBE
 SK  = GameVariables.SCHLUESSEL_FARBE
-SK_R = GameVariables.SCHLUESSEL_RADIUS
-ANZ  = GameVariables.SCHLUESSEL_ANZAHL
+ANZ = GameVariables.SCHLUESSEL_ANZAHL
 
 
 def draw_battery(surface: pygame.Surface, battery: float) -> None:
-    """Zeichnet die Taschenlampen-Batterieanzeige unten rechts."""
+    # akkuanzeige unten rechts zeichnen
     bw = 120
     bh = 14
     bx = SW - bw - 20
@@ -47,9 +45,9 @@ def draw_battery(surface: pygame.Surface, battery: float) -> None:
 
 
 def draw_keys(surface: pygame.Surface, gesammelt: int) -> None:
-    """Zeigt die gesammelten Schlüssel oben links an."""
+    # gesammelte schluessel oben links anzeigen
     font = pygame.font.SysFont("monospace", 12)
-    beschr = font.render("Schlüssel:", True, (180, 180, 200))
+    beschr = font.render("Schluessel:", True, (180, 180, 200))
     surface.blit(beschr, (16, 38))
 
     for i in range(ANZ):
@@ -66,9 +64,9 @@ def draw_keys(surface: pygame.Surface, gesammelt: int) -> None:
 
 
 def draw_task_list(surface: pygame.Surface, tasks_done: list[bool]) -> None:
-    """Zeichnet eine Mini-Aufgabenliste oben rechts."""
+    # mini-aufgabenliste oben rechts zeichnen
     aufgaben = [
-        "R1: Kerzen anzünden",
+        "R1: Kerzen anzuenden",
         "R2: Schalter umlegen",
         "R3: Kiste tragen",
         "R4: Memory-Puzzle",
@@ -98,7 +96,7 @@ def draw_task_list(surface: pygame.Surface, tasks_done: list[bool]) -> None:
 
 
 def draw_pulse(surface: pygame.Surface, intensity: float) -> None:
-    """Rote pulsierende Vignette wenn das Monster nah ist."""
+    # rote vignette wenn das monster nah ist
     if intensity <= 0:
         return
 
@@ -117,7 +115,7 @@ def draw_pulse(surface: pygame.Surface, intensity: float) -> None:
 
 
 def draw_dash_hud(surface: pygame.Surface, cooldown_frames: int, is_dashing: bool) -> None:
-    """Zeigt den Dash-Cooldown als Kreisbogen unten links an."""
+    # dash-cooldown als kreisbogen unten links anzeigen
     cx = 56
     cy = SH - 56
     r  = 28
@@ -148,11 +146,11 @@ def draw_dash_hud(surface: pygame.Surface, cooldown_frames: int, is_dashing: boo
     inner_farbe = (50, 160, 220) if bereit else (50, 40, 70)
     pygame.draw.circle(surface, inner_farbe, (cx, cy), r - 6)
 
-    blitz_farbe  = (220, 240, 255) if bereit else (80, 70, 100)
     blitz_punkte = [
         (cx + 4,  cy - 12), (cx - 2,  cy - 2),  (cx + 3,  cy - 2),
         (cx - 4,  cy + 12), (cx + 2,  cy + 2),  (cx - 3,  cy + 2),
     ]
+    blitz_farbe = (220, 240, 255) if bereit else (80, 70, 100)
     pygame.draw.polygon(surface, blitz_farbe, blitz_punkte)
 
     font = pygame.font.SysFont("monospace", 11)
@@ -170,7 +168,7 @@ def draw_dash_hud(surface: pygame.Surface, cooldown_frames: int, is_dashing: boo
 
 
 def draw_caught_overlay(surface: pygame.Surface, alpha: int = 180) -> None:
-    """Rotes Overlay wenn der Spieler gefangen wird."""
+    # rotes overlay wenn der spieler gefangen wird
     overlay = pygame.Surface((SW, SH))
     overlay.fill((120, 0, 0))
     overlay.set_alpha(alpha)
@@ -178,7 +176,7 @@ def draw_caught_overlay(surface: pygame.Surface, alpha: int = 180) -> None:
 
 
 def draw_hint_bar(surface: pygame.Surface, text: str, duration_ratio: float) -> None:
-    """Zeigt einen Hinweis am unteren Bildschirmrand."""
+    # hinweistext am unteren bildschirmrand anzeigen
     alpha = int(255 * min(1.0, duration_ratio * 5))
     if alpha <= 0:
         return
@@ -207,7 +205,7 @@ def draw_hud(surface: pygame.Surface,
              hint_ratio: float = 0.0,
              dash_cooldown: int = 0,
              is_dashing: bool = False) -> None:
-    """Zeichnet das komplette HUD in einem Aufruf."""
+    # komplettes hud in einem aufruf zeichnen
     draw_pulse(surface, pulse_intensity)
     draw_battery(surface, battery)
     draw_keys(surface, keys_collected)

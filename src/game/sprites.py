@@ -1,13 +1,12 @@
 import math
 import os
-import random
 import pygame
 
 _ASSETS_PFAD = os.path.join(os.path.dirname(__file__), "..", "assets")
 
 
 def _make_surf(w: int, h: int) -> pygame.Surface:
-    """Erstellt eine transparente SRCALPHA-Surface."""
+    # leere transparente surface erstellen
     s = pygame.Surface((w, h), pygame.SRCALPHA)
     s.fill((0, 0, 0, 0))
     return s
@@ -15,7 +14,7 @@ def _make_surf(w: int, h: int) -> pygame.Surface:
 
 def _glow_circle(surf: pygame.Surface, cx: int, cy: int,
                  radius: int, color: tuple, schichten: int = 6) -> None:
-    """Zeichnet einen weichen Leuchtkreis aus mehreren Schichten."""
+    # leuchtkreis aus mehreren transparenten schichten zeichnen
     r, g, b = color[:3]
     for i in range(schichten, 0, -1):
         a   = int(200 * (i / schichten) ** 1.6)
@@ -26,7 +25,7 @@ def _glow_circle(surf: pygame.Surface, cx: int, cy: int,
 
 
 def _lade_sheet(dateiname: str) -> pygame.Surface | None:
-    """Lädt ein Sprite-Sheet aus dem Assets-Ordner (generiert es wenn nötig)."""
+    # sprite-sheet aus dem assets-ordner laden (generiert es wenn noetig)
     pfad = os.path.join(_ASSETS_PFAD, dateiname)
     if not os.path.exists(pfad):
         try:
@@ -41,10 +40,8 @@ def _lade_sheet(dateiname: str) -> pygame.Surface | None:
 
 
 class MonsterSprite:
-    """
-    Lädt Monster-Frames aus monster_sheet.png (6 Frames × 3 Zustände).
-    Fällt auf pygame.draw-Fallback zurück wenn kein PNG vorhanden.
-    """
+    # laedt monster-frames aus monster_sheet.png (6 frames x 3 zustaende)
+    # falls kein png vorhanden: fallback auf pygame.draw
 
     W      = 80
     H      = 110
@@ -63,7 +60,7 @@ class MonsterSprite:
             self._fallback_bauen()
 
     def _aus_sheet_extrahieren(self, sheet: pygame.Surface) -> None:
-        """Schneidet alle Frames aus dem Sprite-Sheet heraus."""
+        # alle frames aus dem sprite-sheet ausschneiden
         for si, state in enumerate(self.STATES):
             frames = []
             for fi in range(self.FRAMES):
@@ -74,7 +71,7 @@ class MonsterSprite:
             self._frames[state] = frames
 
     def _fallback_bauen(self) -> None:
-        """Erstellt detaillierte pygame.draw-Sprites als Fallback."""
+        # monster-sprites mit pygame.draw zeichnen wenn kein png da ist
         for state in self.STATES:
             frames = []
             for fi in range(self.FRAMES):
@@ -84,7 +81,7 @@ class MonsterSprite:
             self._frames[state] = frames
 
     def _koerper_zeichnen(self, surf: pygame.Surface, frame: int, state: str) -> None:
-        """Zeichnet einen einzelnen Monster-Frame mit pygame.draw."""
+        # einen einzelnen monster-frame zeichnen
         cx   = self.W // 2
         t    = frame / self.FRAMES
         wipp = math.sin(t * 2 * math.pi) * 2.5
@@ -176,7 +173,7 @@ class MonsterSprite:
     def draw(self, surface: pygame.Surface,
              sx: int, sy: int,
              zustand: str, frame: int, skalierung: float = 1.0) -> None:
-        """Zeichnet den Monster-Sprite an Bildschirmposition (sx, sy)."""
+        # monster an bildschirmposition zeichnen
         frames = self._frames.get(zustand, self._frames.get("patrol", []))
         if not frames:
             return
@@ -193,7 +190,7 @@ class MonsterSprite:
 
 
 class PlayerSprite:
-    """Lädt Spieler-Frames aus player_sheet.png (4 Lauf + 1 Idle)."""
+    # laedt spieler-frames aus player_sheet.png (4 lauf + 1 idle)
 
     W      = 38
     H      = 38
@@ -224,7 +221,7 @@ class PlayerSprite:
         self._idle = idle
 
     def _fallback_bauen(self) -> None:
-        """Baut Spieler-Sprites komplett mit pygame.draw."""
+        # spieler-sprites mit pygame.draw zeichnen wenn kein png da ist
         for fi in range(self.FRAMES):
             self._lauf_frames.append(self._frame_bauen(fi, True))
         self._idle = self._frame_bauen(0, False)
@@ -268,105 +265,7 @@ class PlayerSprite:
 
     def draw(self, surface: pygame.Surface,
              sx: int, sy: int, bewegt: bool, frame: int) -> None:
-        """Zeichnet den Spieler-Sprite an Bildschirmposition (sx, sy)."""
+        # spieler an bildschirmposition zeichnen
         bild = self._lauf_frames[frame % self.FRAMES] if bewegt else self._idle
         if bild:
             surface.blit(bild, (sx - self.W // 2, sy - self.H // 2))
-
-
-def draw_blood_splatter(surface: pygame.Surface,
-                        cx: int, cy: int,
-                        seed: int = 0,
-                        groesse: float = 1.0) -> None:
-    """Zeichnet einen zufälligen Blutfleck an Position (cx, cy)."""
-    rng = random.Random(seed)
-
-    for _ in range(rng.randint(2, 5)):
-        r   = int(rng.randint(8, 22) * groesse)
-        ox  = rng.randint(-18, 18)
-        oy  = rng.randint(-18, 18)
-        col = (rng.randint(90, 145), 0, 0)
-        pygame.draw.ellipse(surface, col,
-                            (cx + ox - r, cy + oy - r // 2, r * 2, r))
-
-    for _ in range(rng.randint(4, 10)):
-        tx   = cx + rng.randint(-40, 40)
-        ty   = cy + rng.randint(-30, 60)
-        tr   = int(rng.randint(3, 9) * groesse)
-        tcol = (rng.randint(75, 130), 0, 0)
-        pygame.draw.circle(surface, tcol, (tx, ty), max(1, tr))
-        if rng.random() > 0.5:
-            tlen = int(rng.randint(10, 35) * groesse)
-            pygame.draw.line(surface, (85, 0, 0),
-                             (tx, ty + tr),
-                             (tx + rng.randint(-5, 5), ty + tr + tlen), 2)
-
-
-def draw_wall_text(surface: pygame.Surface,
-                   text: str, x: int, y: int,
-                   farbe: tuple = (100, 0, 0),
-                   groesse: int = 16,
-                   kratzer: bool = True) -> None:
-    """Zeichnet eine Wandinschrift, optisch wie mit Blut geschrieben."""
-    try:
-        font = pygame.font.SysFont("monospace", groesse, bold=True)
-    except Exception:
-        font = pygame.font.Font(None, groesse)
-
-    txt = font.render(text, True, farbe)
-
-    if kratzer:
-        rng = random.Random(hash(text + str(x)))
-        for _ in range(3):
-            dx    = rng.randint(-2, 2)
-            dy    = rng.randint(-1, 1)
-            geist = txt.copy()
-            geist.set_alpha(40)
-            surface.blit(geist, (x + dx, y + dy))
-
-    surface.blit(txt, (x, y))
-
-
-def draw_hanging_chain(surface: pygame.Surface,
-                       cx: int, oben_y: int,
-                       laenge: int = 80,
-                       schwingung: float = 0.0) -> None:
-    """Zeichnet eine hängende Kette mit optionaler Seitwärtsschwingung."""
-    glied_h  = 10
-    glieder  = laenge // glied_h
-    dunkel_f = (30, 28, 25)
-    hell_f   = (70, 65, 55)
-
-    for i in range(glieder):
-        ly  = oben_y + i * glied_h
-        ox  = int(schwingung * i * 2.5)
-        w   = 6 if i % 2 == 0 else 4
-        h   = glied_h - 1
-        rect = pygame.Rect(cx - w // 2 + ox, ly, w, h)
-        pygame.draw.rect(surface, dunkel_f, rect, border_radius=2)
-        pygame.draw.rect(surface, hell_f,   rect, 1, border_radius=2)
-
-    end_x = cx + int(schwingung * glieder * 2.5)
-    end_y = oben_y + laenge
-    pygame.draw.circle(surface, (20, 18, 15), (end_x, end_y), 8)
-    pygame.draw.circle(surface, (40, 35, 30), (end_x, end_y), 8, 1)
-
-
-def draw_shadow_figure(surface: pygame.Surface,
-                       cx: int, cy: int,
-                       alpha: int = 120,
-                       hoehe: int = 80) -> None:
-    """Zeichnet eine dunkle Schattenfigur für Horror-Atmosphäre."""
-    fig = _make_surf(hoehe, hoehe + 30)
-    w   = hoehe // 3
-    fh  = hoehe
-    fw  = fig.get_width() // 2
-
-    pygame.draw.ellipse(fig, (10, 8, 12), (fw - w // 2, fh // 3, w, fh // 2))
-    pygame.draw.circle(fig, (8, 6, 10), (fw, fh // 4), w // 2)
-    pygame.draw.line(fig, (10, 8, 12), (fw, fh // 2), (4, fh // 2 + 15), 5)
-    pygame.draw.line(fig, (10, 8, 12), (fw, fh // 2),
-                     (fig.get_width() - 4, fh // 2 + 15), 5)
-
-    fig.set_alpha(alpha)
-    surface.blit(fig, (cx - fig.get_width() // 2, cy - fh))
