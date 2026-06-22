@@ -288,7 +288,7 @@ def _menu_zeichnen(surface: pygame.Surface, clock_ms: int,
     # startposition: etwas unterhalb der bildmitte (wo das bild frei ist)
     start_y = 295
 
-    beschriftungen = ["SPIEL STARTEN", "STEUERUNG", "BEENDEN"]
+    beschriftungen = ["SPIEL STARTEN", "STEUERUNG", "HIGHSCORES", "BEENDEN"]
     rects = []
     for i, lbl in enumerate(beschriftungen):
         by = start_y + i * (bh + gap)
@@ -745,7 +745,7 @@ def main() -> None:
             cx_m = GV.SCREEN_W // 2
             start_y_m = 295
             menu_hover = -1
-            for i in range(3):
+            for i in range(4):
                 by = start_y_m + i * (bh + gap)
                 r  = pygame.Rect(cx_m - bw // 2, by - bh // 2, bw, bh)
                 if r.collidepoint(rmx, rmy):
@@ -762,7 +762,9 @@ def main() -> None:
                     zustand        = GameState.PLAYING
                 elif menu_hover == 1:             # Steuerung
                     zustand = GameState.STEUERUNG
-                elif menu_hover == 2:             # Beenden
+                elif menu_hover == 2:             # Highscores
+                    zustand = GameState.HIGHSCORE
+                elif menu_hover == 3:             # Beenden
                     laeuft = False
 
             # enter startet das spiel weiterhin (fuer tastatur-nutzer)
