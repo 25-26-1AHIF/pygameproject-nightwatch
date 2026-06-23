@@ -12,44 +12,44 @@ STANDARDS: dict = {
 }
 
 # aktuell geladene konfigurationswerte (wird beim import befüllt)
-_daten: dict = {}
+daten: dict = {}
 
 
 def load() -> None:
     # konfigurationsdatei laden oder standardwerte verwenden
-    _daten.clear()
+    daten.clear()
     if os.path.exists(CONFIG_PFAD):
         try:
             with open(CONFIG_PFAD, "r", encoding="utf-8") as f:
                 geladen = json.load(f)
-            _daten.update({**STANDARDS, **geladen})
+            daten.update({**STANDARDS, **geladen})
         except (json.JSONDecodeError, OSError):
-            _daten.update(STANDARDS)
+            daten.update(STANDARDS)
     else:
-        _daten.update(STANDARDS)
+        daten.update(STANDARDS)
 
 
 def save() -> None:
     # aktuelle konfiguration in datei schreiben
     try:
         with open(CONFIG_PFAD, "w", encoding="utf-8") as f:
-            json.dump(_daten, f, ensure_ascii=False, indent=2)
+            json.dump(daten, f, ensure_ascii=False, indent=2)
     except OSError as e:
         print(f"[Config] Konnte Konfiguration nicht speichern: {e}")
 
 
 def get(key: str, default=None):
     # einen konfigurationswert abfragen
-    if not _daten:
+    if not daten:
         load()
-    return _daten.get(key, default if default is not None else STANDARDS.get(key))
+    return daten.get(key, default if default is not None else STANDARDS.get(key))
 
 
 def set_val(key: str, value) -> None:
     # einen konfigurationswert setzen (noch nicht speichern)
-    if not _daten:
+    if not daten:
         load()
-    _daten[key] = value
+    daten[key] = value
 
 
 load()
