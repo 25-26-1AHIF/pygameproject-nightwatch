@@ -2,7 +2,7 @@
 
 **Entwickler:** Onur Gündüz & Fabian Bechter  
 **Schule:** HTL Rankweil | Klasse 1AHIF | Schuljahr 2025/26  
-**Fach:** Programmieren und Objektorientierung (POS)  
+**Fach:** Programmieren und Softwareengineering (POS)  
 
 ---
 
