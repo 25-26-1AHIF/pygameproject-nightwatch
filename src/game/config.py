@@ -3,7 +3,7 @@ import os
 
 CONFIG_PFAD = os.path.join(os.path.dirname(__file__), "..", "nightwatch_config.json")
 
-_STANDARDS: dict = {
+STANDARDS: dict = {
     "resolution": "1080p",
     "quality":    "Hoch",
     "master_vol": 80,
@@ -22,11 +22,11 @@ def load() -> None:
         try:
             with open(CONFIG_PFAD, "r", encoding="utf-8") as f:
                 geladen = json.load(f)
-            _daten.update({**_STANDARDS, **geladen})
+            _daten.update({**STANDARDS, **geladen})
         except (json.JSONDecodeError, OSError):
-            _daten.update(_STANDARDS)
+            _daten.update(STANDARDS)
     else:
-        _daten.update(_STANDARDS)
+        _daten.update(STANDARDS)
 
 
 def save() -> None:
@@ -42,7 +42,7 @@ def get(key: str, default=None):
     # einen konfigurationswert abfragen
     if not _daten:
         load()
-    return _daten.get(key, default if default is not None else _STANDARDS.get(key))
+    return _daten.get(key, default if default is not None else STANDARDS.get(key))
 
 
 def set_val(key: str, value) -> None:
