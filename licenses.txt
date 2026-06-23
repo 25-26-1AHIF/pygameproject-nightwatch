@@ -11,7 +11,7 @@ Datum:    22. Juni 2026
 ---------
 Lizenz:  Python Software Foundation License (PSF)
 URL:     https://www.python.org/psf/license/
-Version: 3.12+
+Version: 3.11+
 
 
 2. pygame
@@ -95,3 +95,9 @@ Betroffene Dateien und Abschnitte:
 
 Die PauseMenu-Klasse (ursprünglich KI-markiert) wurde im Zuge der
 Vereinfachung vollständig durch eigenen einfacheren Code ersetzt.
+
+9. Dokumentation
+------------------------------------------------------
+Die Dokumentation wurde vollständig von Onur in Adobe Indesign 2026 erstellt,
+um eine gute Übersicht aller Informationen zu erhalten, wurden an manchen
+Stellen Claude Opus 4.8 verwendet, um Informationen zu erhalten.
