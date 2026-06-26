@@ -39,7 +39,7 @@ Monster-Sprites (assets/monster_sheet.png) und Spieler-Sprites
 (assets/player_sheet.png) wurden vollständig selbst gezeichnet. (Aseprite + Adobe Photoshop 2026)
 
 Für die Erstellung der Level-Grafiken wie Wände, Böden, Parkette, Teppiche usw. wurde
-pygame.draw + das Python Package "Pillow" verwendet.
+pygame.draw verwendet.
 
 Somit werden keine externen Assets außer die (selbstgezeichneten) Spieler und Monster Assets benötigt.
 
